@@ -1,7 +1,7 @@
 ## To Do List
 - Put stuff in to do list
 
-- Make user class
+- Make party class 
   - inventory / items as a member?
   
   
