@@ -2,7 +2,7 @@
 - Put stuff in to do list
 
 - Make user class
-  - inventory is a member of the user class
+  - inventory / items as a member?
   
   
   Functions needed 
