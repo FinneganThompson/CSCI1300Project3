@@ -12,5 +12,7 @@
   
   ### Counters needed during the game
   - Rooms cleared 
-  - Sorceres anger (member of sorcerer class?)
+  - Sorcerers anger (member of sorcerer class?)
+  - Hunger (member of player)
+  - Gold pieces (member of player)
   
