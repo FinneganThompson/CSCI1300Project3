@@ -3,7 +3,7 @@
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
 *
-* Includes player struct, status struct, party class
+* Includes player struct, partyDependentAttackContributors struct status struct, party class
 */
 
 #include "item.h"
@@ -13,6 +13,13 @@ struct player{
     string name;
     int hunger;
     bool isUserPlayer; // Is the one controlling the game (leader)
+
+};
+
+struct partyDependentAttackContributors{ // Parts of the attack formula that are dependent on the party
+    int w; // #weapons + modifiers
+    int d; // 4 if all weapons are unique, 0 else
+    int a; // #armor sets
 
 };
 
@@ -52,6 +59,7 @@ class party{
 
         vector<player> starvingPlayers(); // Returns all starving players
         partyStatus getStatus(); // Returns filled status
+        partyDependentAttackContributors getPartyDependentAttackContributors(); // Returns filled struct. 
 
         void killPlayerNoMessage(string name); // Removes player and items as appropriate
         void killPlayerOfHunger(string name); // Removes player + items and prints hunger death message
