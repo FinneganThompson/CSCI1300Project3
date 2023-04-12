@@ -16,7 +16,7 @@ check map file
 party file:
 npc class
 	puzzles
-\tsummon monster 
+	summon monster 
 
 player class (could include other party members)
 monster class
