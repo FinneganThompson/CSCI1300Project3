@@ -15,7 +15,9 @@ check map file
 
 party file:
 npc class
+
 	puzzles
+	
 	summon monster 
 
 player class (could include other party members)
