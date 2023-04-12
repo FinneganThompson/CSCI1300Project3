@@ -15,9 +15,7 @@ check map file
 
 party file:
 npc class
-
 	puzzles
-	
 	summon monster 
 
 player class (could include other party members)
@@ -44,6 +42,7 @@ Treasures
 Keys
 
 status update:
+
 (can use inventory same for merchant)
 Number of rooms cleared
 Keys found
@@ -55,13 +54,16 @@ Gold available
 Treasure items available 
 Sorcerer’s anger
 
+
 figure out how the npc is stored in the map
 each type of space has a special action 
 
 
 
 game play:
+
 phase 1:
+
 Map should generate randomly 
 Enter names of player and party members (each has 50 fullness points, bellow 0 means death)
 Start with 100 gold 
@@ -70,6 +72,7 @@ Get merchnat menu
 
 
 Each turn:
+
 Display status update 
 Display map 
 Display action menu
@@ -82,6 +85,7 @@ for normal spaces:
 	pick a fight 
 	cook and eat
 	give up
+	
 for npc spaces
 	move
 	speak to npc 
@@ -89,12 +93,14 @@ for npc spaces
 		if not complete will sommon monster 
 		space changes to explored no matter what
 	give up
-for room spaces 
+	
+for room spaces
 	move
 	open the door
 		if monster is defeated 60% of misfortune 
 		if does not defeat monster consequences (key is lost, 40% chance of misfortune)
 	give up
+	
 
 Use functions to remove room or npc as needed
 
