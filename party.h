@@ -8,6 +8,9 @@
 
 #include "item.h"
 
+#ifndef PARTY_H
+#define PARTY_H
+
 struct player{
 
     string name;
@@ -69,3 +72,5 @@ class party{
 
 
 };
+
+#endif
