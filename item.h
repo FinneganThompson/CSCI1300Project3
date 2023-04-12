@@ -9,6 +9,9 @@
 #include <string>
 #include <vector>
 
+#ifndef ITEM_H
+#define ITEM_H
+
 using namespace std;
 
 // Ingredients struct
@@ -22,7 +25,7 @@ struct ingredient{
 struct weapon{
     char type; // C: Club, S: Spear, R: Rapier, B: Battle axe, L: longsword
     int cost; // C,S: 2; R:5; B:15; L:50;
-    int modifier; // R: +1; B: +2; L: +3
+    int modifier; // R: +1; B: +2; L: +3 (Default is 1)
 };
 
 // Armor struct
@@ -71,3 +74,5 @@ class inventory{
         bool hasSufficientGold(int goldNeeded); // Checks to see if the user has sufficient gold
  
 };
+
+#endif
