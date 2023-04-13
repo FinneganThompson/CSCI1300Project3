@@ -11,8 +11,8 @@
 // no default constructor 
 // parameterized constructor
 Monster :: Monster(string inputName, int inputLevel){
-    string name = inputName;
-    int level = inputLevel;
+    name = inputName;
+    level = inputLevel;
 }
 string Monster :: getName(){
     return name;
