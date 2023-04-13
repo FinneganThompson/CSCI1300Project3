@@ -32,6 +32,7 @@ class Sorcerer{
     int getLevel();
     void setLevel(int inputLevel);
     int getAnger();
+    // to be used each turn since it can only increase by one
     void increaseAnger();
 };
 
