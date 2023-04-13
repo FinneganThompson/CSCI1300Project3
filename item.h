@@ -18,7 +18,7 @@ using namespace std;
 struct ingredient{  
     string name;
     int kilograms;
-    int cost; // Cost / kg; always 1g
+    const int cost = 1; // Cost / kg; always 1g
 }; 
 
 // Weapons struct
@@ -30,6 +30,7 @@ struct weapon{
 
 // Armor struct
 struct armor{
+    int protection = 1; // Defualt protection level is one
     const int cost = 5;
 };
 
@@ -55,23 +56,31 @@ class inventory{
         vector<ingredient> ingredients_;
         vector <weapon> weapons_;
         vector <armor> armors_;
-        vector <cookware> cookware_;
-        vector <treasure> treasure_;
+        vector <cookware> cookwares_;
+        vector <treasure> treasures_;
 
     public:
         inventory();
 
         int totalIngredientsAvliable(); // Returns total ingredients avail. in kg
-
         int goldAvalible(); // Returns gold avalible
+        vector<weapon> weaponsAvalible(); // Returns weapons avalible
+        int armorAvalible(); // Returns armor avalible
+        vector<treasure> treasureAvailible(); // Returns treasure availible
+        vector<cookware> cookwareAailible(); // Returns cookware avalible
 
-        weapon weaponsAvalible(); // Returns weapons avalible
 
-        armor armorAvalible(); // Returns armor avalible
+        void addIngredients(ingredient ingredientToAdd); // Adds ingredient to ingredients vector
+        void addGold(int numPieces); // Adds numPieces to the current amount of gold
+        void addWeapons(weapon weaponToAdd); // Add weapon to inventory
+        void addArmor(armor armorToAdd); // Add armor to inventory
+        void addCookware(cookware cookwareToAdd); // Add cookware to inventory
+        void findTreasure(treasure treasureToAdd); // Add treasure to inventory
 
-        treasure treasureAvailible(); // Returns treasure availible
 
-        bool hasSufficientGold(int goldNeeded); // Checks to see if the user has sufficient gold
+        bool useCookware(char type, int kgIngredientsUsed); // If cookware of a given type is avaible, see if using it results in sucess. Uses up ingredients
+
+        bool spendGold(int amountToSpend); // Checks to see if the user has sufficient gold, subtracts it if true
  
 };
 
