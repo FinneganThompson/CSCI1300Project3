@@ -44,17 +44,32 @@ class party{
         int turnsElapsed_;
 
         vector<string> monstersDefeated_; // holds the monsteres that the party has encountered and defeated
-        int monstersDefeated;
+        int numMonstersDefeated_;
 
     public:
 
         inventory partyInventory_;
+        party(); // Default constructor, all ints set to zero
+
+        int getRoomsCleared();
+        int getSpacesExplored();
+        int getKeysFound();
+        int getTurnsElapsed();
+        int getNumMonstersDefeated();
+
+        void increaseRoomsCleared(); // Inc. by 1
+        void increaseSpacesExplored(); // Inc. by 1
+        void increaseKeysFound(); // Inc. by 1
+        void incrementTurn(); // Inc by 1
+
+        void addPlayer(player playerToAdd);
+        vector<player> getPlayers(); 
 
         void investigate(); // 10% key; 20% treasure; 10% monster; no matter outcome 50% individual hunger drop chance
 
         void cookAndEat(); // Prompts for kg ingredients and cookware. Hunger increases are dist. equally
 
-        void winBattle(int challengeRating); // Adds 10 * challenge coins and 5 * challenge kg of food to inventory, adds key 10% of time. 50% food drop by 1. 
+        void winBattle(int challengeRating, string monsterName); // Adds 10 * challenge coins and 5 * challenge kg of food to inventory, adds key 10% of time. 50% food drop by 1. Add monster to monsters defeated
         void loseBattle(); // Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. Prints death message. 50% food drop by 1. 
         void surrenderBattle(); // Party loses one non-main member and items as appropiate. 50% food drop by 1. 
 
