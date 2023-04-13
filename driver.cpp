@@ -37,7 +37,32 @@ int main()
     assert(mainParty.partyInventory_.goldAvalible() == 10);
     assert(mainParty.partyInventory_.spendGold(20) == false);
 
+    // check declaring and changing a monster
+    string nameM = "Lizard man";
+    int levelM = 2;
+    Monster m(nameM, levelM);
+    assert(m.getName()=="Lizard man");
+    assert(m.getLevel()==2);
+    m.setLevel(4);
+    m.setName("Demiguise");
+    assert(m.getName()=="Demiguise");
+    assert(m.getLevel()==4);
 
+    // check declaring and changing the sorcerer
+    string nameS = "Sorcerer";
+    int levelS = 6;
+    Sorcerer s(nameS, levelS);
+    assert(s.getName()=="Sorcerer");
+    assert(s.getLevel()==6);
+    assert(s.getAnger()==0);
+    s.setLevel(5);
+    s.setName("Bill");
+    s.increaseAnger();
+    s.increaseAnger();
+    s.increaseAnger();
+    assert(s.getName()=="Bill");
+    assert(s.getLevel()==5);
+    assert(s.getAnger()==3);
 
     return 0;
 
