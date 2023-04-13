@@ -7,14 +7,13 @@
 */
     
 #include "Sorcerer.h"
-    
 
 // no default constructor 
 // parameterized constructor
 Sorcerer :: Sorcerer(string inputName, int inputLevel){
-    string name = inputName;
-    int level = inputLevel;
-    int anger = 0;
+    name = inputName;
+    level = inputLevel;
+    anger = 0;
 }
 string Sorcerer :: getName(){
     return name;
@@ -31,7 +30,6 @@ void Sorcerer :: setLevel(int inputLevel){
 int Sorcerer :: getAnger(){
     return anger;
 }
-// to be used each turn since it can only increase by one
 void Sorcerer :: increaseAnger(){
     anger += 1;
 }
