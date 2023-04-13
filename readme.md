@@ -1,6 +1,7 @@
 *Formerly gameNotes.md*
+
 Map should generate randomly 
-Enter names of player and party members (each has 50 fullness points, bellow 0 means death)
+Enter names of player and party members (each has 50 fullness points, bellow 0 means death)gameNotes.md
 Start with 100 gold 
 game ends when sorcer gets 100 anger 
 Get merchnat menu
