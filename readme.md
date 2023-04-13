@@ -1,3 +1,4 @@
+*Formerly gameNotes.md*
 Map should generate randomly 
 Enter names of player and party members (each has 50 fullness points, bellow 0 means death)
 Start with 100 gold 
