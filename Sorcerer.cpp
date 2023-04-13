@@ -31,6 +31,7 @@ void Sorcerer :: setLevel(int inputLevel){
 int Sorcerer :: getAnger(){
     return anger;
 }
+// to be used each turn since it can only increase by one
 void Sorcerer :: increaseAnger(){
     anger += 1;
 }
