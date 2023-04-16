@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <time.h>
 
+using namespace std;
+
 #ifndef RNG_H
 #define RNG_H
 
