@@ -7,11 +7,12 @@
 */
 
 #include <cstdlib>
+#include <time.h>
 
 #ifndef RNG_H
 #define RNG_H
 
-bool actionOccurs(int probabilityOfAction); // returns wether or not an action occurs based off of its probability
+bool doesActionOccur(int probabilityOfAction); // returns wether or not an action occurs based off of its probability
 int randIntBetweenOneAndTen(); // Returns random int between one and ten (not including 0, including 10)
 
 #endif
