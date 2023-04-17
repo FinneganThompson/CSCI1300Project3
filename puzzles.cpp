@@ -189,10 +189,3 @@ bool doorPuzzle()
 
 }
 
-
-int main()
-{
-    bool npc = doorPuzzle();
-    cout << npc; 
-    return 0;
-}
