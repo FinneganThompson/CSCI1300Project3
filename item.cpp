@@ -29,9 +29,19 @@ cookware::cookware(char type)
 }
 
 // !!TO DO!! Determines if cookware breaks based off of type and RNG 
-bool cookware::useCooware()
+bool cookware::useCookware()
 {
  return false;
+}
+
+char cookware::getType()
+{
+    return type_;
+}
+
+int cookware::getCost()
+{
+    return cost_;   
 }
 
 // Default constructor for inventory
