@@ -67,7 +67,7 @@ class inventory{
         vector<weapon> weaponsAvalible(); // Returns weapons avalible
         int armorAvalible(); // Returns armor avalible
         vector<treasure> treasureAvailible(); // Returns treasure availible
-        vector<cookware> cookwareAailible(); // Returns cookware avalible
+        vector<cookware> cookwareAvailible(); // Returns cookware avalible
 
 
         void addIngredients(ingredient ingredientToAdd); // Adds ingredient to ingredients vector
