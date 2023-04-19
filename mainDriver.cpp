@@ -69,9 +69,10 @@ for room spaces
 void printInventory(party mainParty){
     inventory partyInventory = mainParty.partyInventory_;
     vector<cookware> partyCookware = partyInventory.cookwareAailible();
-    cookware pot('P');
-    cookware fryingPan('F');
-    cookware cauldron('C');
+    // could be useful to make this a separtate function but yeah
+    int pots;
+    int fryingPans;
+    int cauldrons;
     for(int i = 0; i < partyCookware.size(); i++){
         if(partyCookware[i] == 'P'){
             
