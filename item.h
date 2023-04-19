@@ -42,7 +42,7 @@ class cookware
         int cost_; // Will be set by constructor
     public:
         cookware(char type); // Validates type and sets price based on typ
-        bool useCooware(); // Returns false is cookware breaks. 
+        bool useCookware(); // Returns false is cookware breaks. 
         char getType(); // Returns cookware type
         int getCost(); // Returns cookware cost
 };
