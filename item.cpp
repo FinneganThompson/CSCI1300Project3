@@ -71,7 +71,7 @@ vector<treasure> inventory::treasureAvailible()
 }
 
 //Returns array of availible cookware
-vector<cookware> inventory::cookwareAailible()
+vector<cookware> inventory::cookwareAvailible()
 {
     return cookwares_;
 }
