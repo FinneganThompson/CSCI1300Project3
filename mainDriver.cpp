@@ -334,18 +334,3 @@ int main(){
     return 0;
 }
 
-/*
-get ingredients is not working because i am not adding it lmfao
-can change the type of type of weapons, ie stone to wood club
-could be good to chnage type of items from structs to classes
-could make invalid input outputs more fun
-maybe integrate setting the type and cost and all that in a class definition for the wepons and cookware and treasure 
-could give background info in phase one before menu
-"Welcome to the store, since it's your first time in let me give you some important information...
-You will see other vendors out there and while we all cary similar good, are prices may not be so similar."
-Give background info at start, how to win, how to lose, could make it a help menu that can be called
-will print thank you even if cancelled could make bool or leave it
-clean up responses and add parts that use type in response
-
-change the type identifier for the cookware to be an int and match to the menu options
-*/
