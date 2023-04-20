@@ -53,6 +53,7 @@ int split(string inputString, char seperator, string peiceArray[], int peiceArra
 
 int NPCPuzzle()
 {
+    RNG randomGenerator = RNG();
     ifstream puzzleFile; 
     puzzleFile.open("riddles.txt");
 
@@ -82,7 +83,7 @@ int NPCPuzzle()
 
     puzzleFile.close(); 
 
-    int puzzleIndex = randIntOnRange(0, riddles.size()-1); // Randomly select a ridd;e
+    int puzzleIndex = randomGenerator.randIntOnRange(0, riddles.size()-1); // Randomly select a ridd;e
     string puzzleAnswer = answers.at(puzzleIndex); // Find its answer
 
     string userInput; 
@@ -114,6 +115,7 @@ int NPCPuzzle()
 
 bool doorPuzzle()
 {
+    RNG randomGenerator = RNG();
     const int BOULDER = 0; // Numerical representaions of the three choices
     const int PARCHMENT = 1;
     const int SHEARS = 2;
@@ -150,7 +152,7 @@ bool doorPuzzle()
                 continue;
         }
 
-        int doorsNumChoice = randIntOnRange(0,2);
+        int doorsNumChoice = randomGenerator.randIntOnRange(0,2);
         
         int result = (userNumInput - doorsNumChoice);
         switch(result)
@@ -189,3 +191,10 @@ bool doorPuzzle()
 
 }
 
+
+int main()
+{
+    bool npc = doorPuzzle();
+    cout << npc; 
+    return 0;
+}
