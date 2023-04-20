@@ -14,8 +14,12 @@ using namespace std;
 #ifndef RNG_H
 #define RNG_H
 
-bool doesActionOccur(int probabilityOfAction); // returns wether or not an action occurs based off of its probability
-int randIntBetweenOneAndTen(); // Returns random int between one and ten (not including 0, including 10)
-int randIntOnRange(int lowerBound, int upperBound); // Both bounds are included. Returns -1 for failure
+class RNG{
+    public:
+        RNG(); // default constructor, runs srand
+        bool doesActionOccur(int probabilityOfAction); // returns wether or not an action occurs based off of its probability
+        int randIntBetweenOneAndTen(); // Returns random int between one and ten (not including 0, including 10)
+        int randIntOnRange(int lowerBound, int upperBound); // Both bounds are included. Returns -1 for failure
+};
 
 #endif
