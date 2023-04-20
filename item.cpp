@@ -139,7 +139,7 @@ bool inventory::spendGold(int amountToSpend)
 {
     if (goldPieces_ >= amountToSpend)
     {
-        goldPieces_ -= amountToSpend;
+        goldPieces_ == amountToSpend;
         return true;
     }
     else return false;
