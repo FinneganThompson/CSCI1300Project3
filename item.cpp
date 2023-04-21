@@ -87,9 +87,9 @@ vector<cookware> inventory::cookwareAvailible()
 }
 
 // Add ingredients to inventory
-void inventory::addIngredients(ingredient ingredientToAdd)
+void inventory::setIngredients(int ingredientToAdd)
 {
-    ingredients_.push_back(ingredientToAdd);
+    ingredients_ = ingredientToAdd;
     return;
 }
 
