@@ -70,7 +70,8 @@ class inventory{
         void addGold(int numPieces); // Adds numPieces to the current amount of gold
         void addWeapons(weapon weaponToAdd); // Add weapon to inventory
         void addArmor(armor armorToAdd); // Add armor to inventory
-        bool removeArmor(int armorToRemove); // Removes armor
+        bool removeArmor(int armorToRemove); // Removes armor. Returns success
+        bool removeCookware(int cookwareToRemove); // Removes cookware. Returns success
         void addCookware(cookware cookwareToAdd); // Add cookware to inventory
         void findTreasure(treasure treasureToAdd); // Add treasure to inventory
 
