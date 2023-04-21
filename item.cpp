@@ -108,6 +108,19 @@ bool inventory::removeArmor(int armorToRemove)
     else return false;
 }
 
+bool inventory::removeCookware(int cookwareToRemove)
+{
+  if (cookwares_.size() >= cookwareToRemove)
+    {
+        for (int i=0; i<cookwareToRemove; i++)
+        {
+            cookwares_.pop_back();
+        }
+        return true;
+    }
+    else return false;  
+}
+
 // Add gold to inventory
 void inventory::addGold(int numPieces)
 {
