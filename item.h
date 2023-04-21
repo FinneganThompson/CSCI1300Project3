@@ -1,3 +1,4 @@
+
 /*
 * item.h
 * CSCI 1300 Project 3, Spring 2023
@@ -13,13 +14,6 @@
 #define ITEM_H
 
 using namespace std;
-
-// Ingredients struct
-struct ingredient{  
-    string name;
-    int kilograms;
-    const int cost = 1; // Cost / kg; always 1g
-}; 
 
 // Weapons struct
 struct weapon{
@@ -55,7 +49,7 @@ struct treasure{
 class inventory{
     private:
         int goldPieces_;
-        vector<ingredient> ingredients_;
+        int ingredients_;
         vector <weapon> weapons_;
         vector <armor> armors_;
         vector <cookware> cookwares_;
@@ -72,7 +66,7 @@ class inventory{
         vector<cookware> cookwareAvailible(); // Returns cookware avalible
 
 
-        void addIngredients(ingredient ingredientToAdd); // Adds ingredient to ingredients vector
+        void setIngredients(int ingredientsToAdd); // Adds ingredient to ingredients vector
         void addGold(int numPieces); // Adds numPieces to the current amount of gold
         void addWeapons(weapon weaponToAdd); // Add weapon to inventory
         void addArmor(armor armorToAdd); // Add armor to inventory
