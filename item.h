@@ -66,10 +66,11 @@ class inventory{
         vector<cookware> cookwareAvailible(); // Returns cookware avalible
 
 
-        void setIngredients(int ingredientsToAdd); // Adds ingredient to ingredients vector
+        void setIngredients(int newIngredientAmount); // Adds ingredient to ingredients vector
         void addGold(int numPieces); // Adds numPieces to the current amount of gold
         void addWeapons(weapon weaponToAdd); // Add weapon to inventory
         void addArmor(armor armorToAdd); // Add armor to inventory
+        bool removeArmor(int armorToRemove); // Removes armor
         void addCookware(cookware cookwareToAdd); // Add cookware to inventory
         void findTreasure(treasure treasureToAdd); // Add treasure to inventory
 
