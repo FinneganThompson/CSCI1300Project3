@@ -60,12 +60,9 @@ void party::cookAndEat()
 void party::winBattle(int challengeRating, string monsterName)
 {
     partyInventory_.addGold(challengeRating*10);
+    int kiloOfIngredients = 5 * challengeRating;
 
-    ingredient tempIngredient;
-    tempIngredient.name = "Monster Meat";
-    tempIngredient.kilograms = 5 * challengeRating;
-
-    partyInventory_.addIngredients(tempIngredient);
+    partyInventory_.setIngredients(partyInventory_.totalIngredientsAvliable() + kiloOfIngredients);
     return;
 }
 
