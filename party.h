@@ -72,8 +72,7 @@ class party{
         void winBattle(int challengeRating, string monsterName); // Adds 10 * challenge coins and 5 * challenge kg of food to inventory, adds key 10% of time. 50% food drop by 1. Add monster to monsters defeated
         void loseBattle(); // Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. Prints death message. 50% food drop by 1. 
         void surrenderBattle(); // Party loses one non-main member and items as appropiate. 50% food drop by 1. 
-
-        void endOfTurnMisfortune(); // Each turn there is a 40% one of the misfortunes will occur. 
+ 
 
         vector<player> starvingPlayers(); // Returns all starving players
         partyStatus getStatus(); // Returns filled status
