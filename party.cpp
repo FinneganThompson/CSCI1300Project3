@@ -82,20 +82,6 @@ void party::surrenderBattle()
     return;
 }
 
-// !! TO DO !! Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
-/*
-robbed (chosen at random) 30%
-    lose ingredients (10kg)
-    cookware (1 item)
-    armor (1 item( break either weapon or armor 10% food poisoning one member loses 10 hunger points (can kill) 
-    30% locked in room: only happens if player tries to open door with key (nothing happens if picked when not open door) 
-    30% One random member that is not leader (can end game if no more members)
-*/
-void party::endOfTurnMisfortune()
-{
-    return;
-}
-
 // !! TO DO !! Returns all starving players
 vector<player> party::starvingPlayers()
 {
