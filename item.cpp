@@ -87,10 +87,25 @@ vector<cookware> inventory::cookwareAvailible()
 }
 
 // Add ingredients to inventory
-void inventory::setIngredients(int ingredientToAdd)
+void inventory::setIngredients(int newIngredientAmount)
 {
-    ingredients_ = ingredientToAdd;
+    ingredients_ = newIngredientAmount;
     return;
+
+}
+
+// Remove armor form the armors_ vector
+bool inventory::removeArmor(int armorToRemove)
+{
+    if (armors_.size() >= armorToRemove)
+    {
+        for (int i=0; i<armorToRemove; i++)
+        {
+            armors_.pop_back();
+        }
+        return true;
+    }
+    else return false;
 }
 
 // Add gold to inventory
