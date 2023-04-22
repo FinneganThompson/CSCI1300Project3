@@ -9,51 +9,164 @@
 #include "item.h"
 #include "RNG.h"
 
-// parameterized constructor for cookware class, sets type and price based on type
-
-cookware::cookware(char type)
-{
-    type_ = type;
-    switch (type)
-    {
-        case 'P': // Pot
-            cost_ = 5;
+// parameterized constructor for weapon class, set based on the type of input 
+weapon::weapon(int inputIntType){
+    switch(inputIntType){
+        case 1:{ // club
+            type = "Club";
+            cost = 2;
+            modifier = 0;
             break;
-        case 'F': // Frying pan
-            cost_ = 10;
+        }
+        case 2:{ //spear
+            type = "Spear";
+            cost = 2;
+            modifier = 0;
             break;
-        case 'C': // Cauldron
-            cost_ = 20;
+        }
+        case 3:{ // rapier
+            type = "Rapier";
+            cost = 5;
+            modifier = 1;
             break;
+        }
+        case 4:{ // battle axe
+            type = "Battle Axe";
+            cost = 15;
+            modifier = 2;
+            break;
+        }
+        case 5:{ // longsword
+            type = "Longsword";
+            cost = 50;
+            modifier = 3;
+            break;
+        }
     }
 }
+// return weapon type
+string weapon::getType(){
+    return type;
+}
+// return cost value
+int weapon::getCost(){
+    return cost;
+} 
+// returns modifier value
+int weapon::getMod(){
+    return modifier;
+} 
 
-// !!TO DO!! Determines if cookware breaks based off of type and RNG 
-bool cookware::useCookware()
-{
- return false;
+// Validates type and sets price based on type
+treasure::treasure(int inputIntType){
+    switch(inputIntType){
+        case 1:{
+            type = "Silver ring";
+            price = 10;
+            break;
+        }
+        case 2:{
+            type = "Ruby necklace";
+            price = 20;
+            break;
+        }
+        case 3:{
+            type = "Emerald bracelet";
+            price = 30;
+            break;
+        }
+        case 4:{
+            type = "Diamond circlet";
+            price = 40;
+            break;
+        }
+        case 5:{
+            type = "Gem-encrusted goblet";
+            price = 50;
+            break;
+        }
+    }
+}
+// returns the type of treasure
+string treasure::getType(){
+    return type;
+}
+// returns treasure cost
+int treasure::getPrice(){
+    return price;
+}
+// returns the amount of that type of treasure
+int treasure::getQuantity(){
+    return quantity;
+}
+// sets the quantity
+void treasure::setQuantity(int inputQuantity){
+    quantity = inputQuantity;
 }
 
-char cookware::getType()
-{
-    return type_;
+
+
+// parameterized constructor for cookware class, sets type and price based on type
+
+cookware::cookware(int inputIntType){
+    switch(inputIntType){
+        case 1:{
+            type = "Ceramic pot";
+            cost = 5;
+            breakProb = 0.25;
+            break;
+        }
+        case 2:{
+            type = "Frying pan";
+            cost =10;
+            breakProb = 0.1;
+            break;
+        }
+        case 3:{
+            type = "Cauldron";
+            cost = 20;
+            breakProb = 0.02;
+            break;
+        }
+    }
+}
+// Returns false is cookware breaks and removes from vector
+bool cookware::useCookware(vector<cookware> cookwares_, int vectPos){
+    RNG prob;
+    if(prob.doesActionOccur(getBreakProb()) == true){
+        cookwares_.erase(cookwares_.begin()+vectPos);
+        return false;
+    }
+    else{
+        return true;
+    }
+} 
+// Returns cookware type
+string cookware::getType(){
+    return type;
+}
+// Returns cookware cost
+int cookware::getCost(){
+    return cost;
+}
+// Retruns the probability of the cookware breaking
+int cookware::getBreakProb(){
+    return breakProb;
 }
 
-int cookware::getCost()
-{
-    return cost_;   
-}
 
 // Default constructor for inventory
 inventory::inventory()
 {
     goldPieces_ = 0;
+    ingredients = 0;
+    armor = 0;
 }
 
 // !!TO DO!! Returns sum of all amount values of ingredient vector
 int inventory::totalIngredientsAvliable()
 {
-    return 0;
+    return ingredients;
 }
 
 // getter for avalible gold
@@ -68,10 +181,10 @@ vector<weapon> inventory::weaponsAvalible()
     return weapons_;
 }
 
-// Returns number of armor pieces avalible
+// Returns number of armor pieces avalible **
 int inventory::armorAvalible()
 {
-    return armors_.size();
+    return armor;
 }
 
 // Returns array of avilible treasure
@@ -86,39 +199,9 @@ vector<cookware> inventory::cookwareAvailible()
     return cookwares_;
 }
 
-// Add ingredients to inventory
-void inventory::setIngredients(int newIngredientAmount)
-{
-    ingredients_ = newIngredientAmount;
-    return;
-
-}
-
-// Remove armor form the armors_ vector
-bool inventory::removeArmor(int armorToRemove)
-{
-    if (armors_.size() >= armorToRemove)
-    {
-        for (int i=0; i<armorToRemove; i++)
-        {
-            armors_.pop_back();
-        }
-        return true;
-    }
-    else return false;
-}
-
-bool inventory::removeCookware(int cookwareToRemove)
-{
-  if (cookwares_.size() >= cookwareToRemove)
-    {
-        for (int i=0; i<cookwareToRemove; i++)
-        {
-            cookwares_.pop_back();
-        }
-        return true;
-    }
-    else return false;  
+// Adds ingredient to total ingredients
+void inventory::addIngredients(int inputIngredients){
+    ingredients += inputIngredients;
 }
 
 // Add gold to inventory
@@ -136,10 +219,13 @@ void inventory::addWeapons(weapon weaponToAdd)
 }
 
 // Add armor to inventory
-void inventory::addArmor(armor armorToAdd)
-{
-    armors_.push_back(armorToAdd);
-    return;
+void inventory::addArmor(int inputArmor){
+    if((armor + inputArmor) <= 5){
+        armor += inputArmor;
+    }
+    else{
+        armor = 5;
+    }
 }
 
 // Add cookware to inventory
@@ -149,11 +235,16 @@ void inventory::addCookware(cookware cookwareToAdd)
     return;
 }
 
-// Add treasure to inventory
+/*// Add treasure to inventory
 void inventory::findTreasure(treasure treasureToAdd)
 {
     treasures_.push_back(treasureToAdd);
     return;
+}*/
+
+// changes the amount of that type of treasure
+void inventory::ChangeQuantity(int type, int quantChange){
+    treasures_.at(type).setQuantity(treasures_.at(type).getQuantity() + quantChange);
 }
 
 // !!TO DO!! Determines if a cookware use is sucessful (if requested cookware exists), and uses up ingredients in cooking
