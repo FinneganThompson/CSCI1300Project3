@@ -63,26 +63,31 @@ treasure::treasure(int inputIntType){
         case 1:{
             type_ = "Silver ring";
             price_ = 10;
+            quantity_ = 0;
             break;
         }
         case 2:{
             type_ = "Ruby necklace";
             price_ = 20;
+            quantity_ = 0;
             break;
         }
         case 3:{
             type_ = "Emerald bracelet";
             price_ = 30;
+            quantity_ = 0;
             break;
         }
         case 4:{
             type_ = "Diamond circlet";
             price_ = 40;
+            quantity_ = 0;
             break;
         }
         case 5:{
             type_ = "Gem-encrusted goblet";
             price_ = 50;
+            quantity_ = 0;
             break;
         }
     }
@@ -150,6 +155,8 @@ inventory::inventory()
     goldPieces_ = 0;
     ingredients_ = 0;
     armor_ = 0;
+    treasure rings(1), necklaces(2), bracelets(3), circlets(4), goblets(5);
+    treasures_ = {rings, necklaces, bracelets, circlets, goblets};
 }
 
 // !!TO DO!! Returns sum of all amount values of ingredient vector
