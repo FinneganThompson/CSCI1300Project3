@@ -1,4 +1,3 @@
-
 /*
 * item.h
 * CSCI 1300 Project 3, Spring 2023
@@ -15,11 +14,24 @@
 
 using namespace std;
 
-// Weapons struct
-struct weapon{
-    char type; // C: Club, S: Spear, R: Rapier, B: Battle axe, L: longsword
-    int cost; // C,S: 2; R:5; B:15; L:50;
-    int modifier; // R: +1; B: +2; L: +3 (Default is 1)
+// Ingredients struct
+struct ingredient{  
+    string name;
+    int kilograms;
+    const int cost = 1; // Cost / kg; always 1g
+}; 
+
+// Weapons class
+class weapon{
+    private:
+        string type; // C: Club, S: Spear, R: Rapier, B: Battle axe, L: longsword 
+        int cost; // C,S: 2; R:5; B:15; L:50 
+        int modifier; // R: +1; B: +2; L: +3 (Default is 1)
+    public:
+        weapon(int inputIntType);
+        string getType(); // return the type of weapon
+        int getCost(); // return cost value
+        int getMod(); // returns modifier value
 };
 
 // Armor struct
@@ -32,26 +44,36 @@ struct armor{
 class cookware
 {
     private:
-        char type_; // P: pot; F: frying pan; C: Cauldron
-        int cost_; // Will be set by constructor
+        string type; // P: pot; F: frying pan; C: Cauldron
+        int cost; // Will be set by constructor
+        int breakProb;
     public:
-        cookware(char type); // Validates type and sets price based on typ
-        bool useCookware(); // Returns false is cookware breaks. 
-        char getType(); // Returns cookware type
+        cookware(int inputIntType); // Validates type and sets price based on type
+        bool useCookware(vector<cookware> cookwares_, int vectPos); // Returns false is cookware breaks and removes from vector
+        string getType(); // Returns cookware type
         int getCost(); // Returns cookware cost
+        int getBreakProb(); // returns probability of cookware breaking
 };
 
-struct treasure{
-    char type; // See writeup for prices and names
-    int cost;
+class treasure{
+    private:
+        string type; 
+        int price;
+        int quantity;
+    public:
+        treasure(int inputIntType); // Validates type and sets price based on type
+        string getType(); // returns the type of treasure
+        int getPrice(); // returns treasure price
+        int getQuantity(); // returns the amount of that type of treasure 
+        void setQuantity(int inputQuantity); // sets the quantity
 };
 
 class inventory{
     private:
         int goldPieces_;
-        int ingredients_;
+        int ingredients;
         vector <weapon> weapons_;
-        vector <armor> armors_;
+        int armor;
         vector <cookware> cookwares_;
         vector <treasure> treasures_;
 
@@ -66,14 +88,12 @@ class inventory{
         vector<cookware> cookwareAvailible(); // Returns cookware avalible
 
 
-        void setIngredients(int newIngredientAmount); // Adds ingredient to ingredients vector
+        void addIngredients(int inputIngredients); // Adds ingredient to total ingredients
         void addGold(int numPieces); // Adds numPieces to the current amount of gold
         void addWeapons(weapon weaponToAdd); // Add weapon to inventory
-        void addArmor(armor armorToAdd); // Add armor to inventory
-        bool removeArmor(int armorToRemove); // Removes armor. Returns success
-        bool removeCookware(int cookwareToRemove); // Removes cookware. Returns success
+        void addArmor(int inputArmor); // Add armor to inventory
         void addCookware(cookware cookwareToAdd); // Add cookware to inventory
-        void findTreasure(treasure treasureToAdd); // Add treasure to inventory
+        void ChangeQuantity(int type, int quantChange); // changes the amount of that type of treasure
 
 
         bool useCookware(char type, int kgIngredientsUsed); // If cookware of a given type is avaible, see if using it results in sucess. Uses up ingredients
