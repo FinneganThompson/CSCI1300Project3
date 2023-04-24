@@ -1,259 +1,107 @@
 /*
-* item.cpp
+* item.h
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
 *
-*  Implementations for all functions in item.h
+* Includes structs and classes for all items
 */
 
-#include "item.h"
-#include "RNG.h"
+#include <string>
+#include <vector>
 
-// parameterized constructor for weapon class, set based on the type of input 
-weapon::weapon(int inputIntType){
-    switch(inputIntType){
-        case 1:{ // club
-            type_ = "Club";
-            cost_ = 2;
-            modifier_ = 0;
-            break;
-        }
-        case 2:{ //spear
-            type_ = "Spear";
-            cost_ = 2;
-            modifier_ = 0;
-            break;
-        }
-        case 3:{ // rapier
-            type_ = "Rapier";
-            cost_ = 5;
-            modifier_ = 1;
-            break;
-        }
-        case 4:{ // battle axe
-            type_ = "Battle Axe";
-            cost_ = 15;
-            modifier_ = 2;
-            break;
-        }
-        case 5:{ // longsword
-            type_ = "Longsword";
-            cost_ = 50;
-            modifier_ = 3;
-            break;
-        }
-    }
-}
-// return weapon type
-string weapon::getType(){
-    return type_;
-}
-// return cost value
-int weapon::getCost(){
-    return cost_;
-} 
-// returns modifier value
-int weapon::getMod(){
-    return modifier_;
-} 
+#ifndef ITEM_H
+#define ITEM_H
 
-// Validates type and sets price based on type
-treasure::treasure(int inputIntType){
-    switch(inputIntType){
-        case 1:{
-            type_ = "Silver ring";
-            price_ = 10;
-            break;
-        }
-        case 2:{
-            type_ = "Ruby necklace";
-            price_ = 20;
-            break;
-        }
-        case 3:{
-            type_ = "Emerald bracelet";
-            price_ = 30;
-            break;
-        }
-        case 4:{
-            type_ = "Diamond circlet";
-            price_ = 40;
-            break;
-        }
-        case 5:{
-            type_ = "Gem-encrusted goblet";
-            price_ = 50;
-            break;
-        }
-    }
-}
-// returns the type of treasure
-string treasure::getType(){
-    return type_;
-}
-// returns treasure cost
-int treasure::getPrice(){
-    return price_;
-}
-// returns the amount of that type of treasure
-int treasure::getQuantity(){
-    return quantity_;
-}
-// sets the quantity
-void treasure::setQuantity(int inputQuantity){
-    quantity_ = inputQuantity;
-}
+using namespace std;
 
+// Ingredients struct
+struct ingredient{  
+    string name;
+    int kilograms;
+    const int cost = 1; // Cost / kg; always 1g
+}; 
 
+// Weapons class
+class weapon{
+    private:
+        string type_; // C: Club, S: Spear, R: Rapier, B: Battle axe, L: longsword 
+        int cost_; // C,S: 2; R:5; B:15; L:50 
+        int modifier_; // R: +1; B: +2; L: +3 (Default is 1)
+    public:
+        weapon(int inputIntType);
+        string getType(); // return the type of weapon
+        int getCost(); // return cost value
+        int getMod(); // returns modifier value
+};
 
-// parameterized constructor for cookware class, sets type and price based on type
+// Armor struct
+struct armor{
+    int protection = 1; // Defualt protection level is one
+    const int cost = 5;
+};
 
-cookware::cookware(int inputIntType){
-    switch(inputIntType){
-        case 1:{
-            type_ = "Ceramic pot";
-            cost_ = 5;
-            breakProb_ = 0.25;
-            break;
-        }
-        case 2:{
-            type_ = "Frying pan";
-            cost_ =10;
-            breakProb_ = 0.1;
-            break;
-        }
-        case 3:{
-            type_ = "Cauldron";
-            cost_ = 20;
-            breakProb_ = 0.02;
-            break;
-        }
-    }
-}
-// Returns cookware type
-string cookware::getType(){
-    return type_;
-}
-// Returns cookware cost
-int cookware::getCost(){
-    return cost_;
-}
-// Retruns the probability of the cookware breaking
-int cookware::getBreakProb(){
-    return breakProb_;
-}
-
-
-// Default constructor for inventory
-inventory::inventory()
+// Cookware class (using cookware may destroy it)
+class cookware
 {
-    goldPieces_ = 0;
-    ingredients_ = 0;
-    armor_ = 0;
-}
+    private:
+        string type_; // P: pot; F: frying pan; C: Cauldron
+        int cost_; // Will be set by constructor
+        int breakProb_;
+    public:
+        cookware(int inputIntType); // Validates type and sets price based on type
+        string getType(); // Returns cookware type
+        int getCost(); // Returns cookware cost
+        int getBreakProb(); // returns probability of cookware breaking
+};
 
-// !!TO DO!! Returns sum of all amount values of ingredient vector
-int inventory::totalIngredientsAvliable()
-{
-    return ingredients_;
-}
+class treasure{
+    private:
+        string type_; 
+        int price_;
+        int quantity_;
+    public:
+        treasure(int inputIntType); // Validates type and sets price based on type
+        string getType(); // returns the type of treasure
+        int getPrice(); // returns treasure price
+        int getQuantity(); // returns the amount of that type of treasure 
+        void setQuantity(int inputQuantity); // sets the quantity
+};
 
-// getter for avalible gold
-int inventory::goldAvalible()
-{
-    return goldPieces_;
-}
+class inventory{
+    private:
+        int goldPieces_;
+        int ingredients_;
+        vector <weapon> weapons_;
+        int armor_;
+        vector <cookware> cookwares_;
+        vector <treasure> treasures_;
 
-// Returns vector of availible weapons
-vector<weapon> inventory::weaponsAvalible()
-{
-    return weapons_;
-}
+    public:
+        inventory();
 
-// Returns number of armor pieces avalible **
-int inventory::armorAvalible()
-{
-    return armor_;
-}
+        int totalIngredientsAvliable(); // Returns total ingredients avail. in kg
+        int goldAvalible(); // Returns gold avalible
+        vector<weapon> weaponsAvalible(); // Returns weapons avalible
+        int armorAvalible(); // Returns armor avalible
+        vector<treasure> treasureAvailible(); // Returns treasure availible
+        vector<cookware> cookwareAvailible(); // Returns cookware avalible
 
-// Returns array of avilible treasure
-vector<treasure> inventory::treasureAvailible()
-{
-    return treasures_;
-}
 
-//Returns array of availible cookware
-vector<cookware> inventory::cookwareAvailible()
-{
-    return cookwares_;
-}
+        void addIngredients(int inputIngredients); // Adds ingredient to total ingredients
+        void addGold(int numPieces); // Adds numPieces to the current amount of gold
+        void addWeapons(weapon weaponToAdd); // Add weapon to inventory
+        void addArmor(int inputArmor); // Add armor to inventory
+        bool removeArmor(int armorToRemove); // Removes armor. Returns success
+        void addCookware(cookware cookwareToAdd); // Add cookware to inventory
+        bool removeCookware(int cookwareToRemove); // Removes cookware. Returns success
+        bool useCookware(vector<cookware> cookwares_, int vectPos); // Returns false is cookware breaks and removes from vector
+        void changeTreasureQuantity(int type, int quantChange); // changes the amount of that type of treasure
 
-// Adds ingredient to total ingredients
-void inventory::addIngredients(int inputIngredients){
-    ingredients_ += inputIngredients;
-}
 
-// Add gold to inventory
-void inventory::addGold(int numPieces)
-{
-    goldPieces_ += numPieces;
-    return;
-}
+        bool useCookware(char type, int kgIngredientsUsed); // If cookware of a given type is avaible, see if using it results in sucess. Uses up ingredients
 
-// Add weapon to inventory
-void inventory::addWeapons(weapon weaponToAdd)
-{
-    weapons_.push_back(weaponToAdd);
-    return;
-}
+        bool spendGold(int amountToSpend); // Checks to see if the user has sufficient gold, subtracts it if true
+ 
+};
 
-// Add armor to inventory
-void inventory::addArmor(int inputArmor){
-    if((armor_ + inputArmor) <= 5){
-        armor_ += inputArmor;
-    }
-    else{
-        armor_ = 5;
-    }
-}
-
-// Add cookware to inventory
-void inventory::addCookware(cookware cookwareToAdd)
-{
-    cookwares_.push_back(cookwareToAdd);
-    return;
-}
-
-// Returns false is cookware breaks and removes from vector
-bool inventory::useCookware(vector<cookware> cookwares_, int vectPos){
-    RNG prob;
-    if(prob.doesActionOccur(cookwares_.at(vectPos).getBreakProb()) == true){
-        cookwares_.erase(cookwares_.begin()+vectPos);
-        return false;
-    }
-    else{
-        return true;
-    }
-} 
-
-// changes the amount of that type of treasure
-void inventory::changeTreasureQuantity(int type, int quantChange){
-    treasures_.at(type).setQuantity(treasures_.at(type).getQuantity() + quantChange);
-}
-
-// !!TO DO!! Determines if a cookware use is sucessful (if requested cookware exists), and uses up ingredients in cooking
-bool inventory::useCookware(char type, int kgIngredientsUsed)
-{
-    return true;
-}
-
-// Checks if sufficient gold is avalible, subtracts it if true
-bool inventory::spendGold(int amountToSpend)
-{
-    if (goldPieces_ >= amountToSpend)
-    {
-        goldPieces_ == amountToSpend;
-        return true;
-    }
-    else return false;
-}
+#endif
