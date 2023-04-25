@@ -82,9 +82,6 @@ void printInventory(inventory partyInventory){
     " | C: " << partyTreasure.at(3).getQuantity() << " | G: " << partyTreasure.at(4).getQuantity() << endl;
 }
 
-
-
-
 /*
 Algorithm is an interactive menu to allow a user to buy or sell items 
 Accepts a party object
@@ -101,10 +98,7 @@ Enter the switch statement
 (Each option)
 */
 
-void merchantMenu(party &mainParty, int &x){
-    x++;
-    // creates the invitory to hold the party's inventory
-    inventory partyInventory = mainParty.partyInventory_;
+void merchantMenu(party &mainParty){
     // create variables to hold the amount to chang the cost, menu choice, quantity, type, and cost
     // set to -1 and l just as random choices to be place holders
     int costChange = 0.25*mainParty.getRoomsCleared(), menuChoice = 0, quantity = -1, type = 0, cost = 0; 
@@ -115,7 +109,7 @@ void merchantMenu(party &mainParty, int &x){
     // the exit option is 6 so anything else should keep user in the loop, invalid input does have a case as well
     while(menuChoice != 6){
         // print the inventory every iteration (this also updates and allows users to see what they have including after buying)
-        printInventory(partyInventory);
+        printInventory(mainParty.partyInventory_);
         // prints all store options
         cout << endl << "Choose one of the following:\n1. Ingredients: To make food, you have to cook raw ingredients." << endl <<
         "2. Cookware: You will need something to cook those ingredients." << endl << 
@@ -143,7 +137,7 @@ void merchantMenu(party &mainParty, int &x){
                         // creates the cost 
                         cost = quantity+(quantity*costChange);
                         // checks to make sure that the party has enough gold to spend
-                        if(partyInventory.spendGold(cost) == false){
+                        if(mainParty.partyInventory_.spendGold(cost) == false){
                             cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                         }
                         else{
@@ -152,8 +146,8 @@ void merchantMenu(party &mainParty, int &x){
                             cout << endl;
                             // checks that the user actually wants to buy the item
                             if(buy != 'n'){
-                                partyInventory.addGold(-cost);
-                                partyInventory.addIngredients(quantity);
+                                mainParty.partyInventory_.addGold(-cost);
+                                mainParty.partyInventory_.addIngredients(quantity);
                                 //allows the loop to be exited
                                 break;
                             }
@@ -194,7 +188,7 @@ void merchantMenu(party &mainParty, int &x){
                             else if(quantity != 0){
                                 cost = (quantity*cook.getCost())+(quantity*cook.getCost()*costChange);
                                 // checks to make sure that the party has enough gold to spend
-                                if(partyInventory.spendGold(cost) == false){
+                                if(mainParty.partyInventory_.spendGold(cost) == false){
                                     cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                                 }
                                 else{
@@ -203,9 +197,9 @@ void merchantMenu(party &mainParty, int &x){
                                     cout << endl;
                                     // only if they want to proceed with purchase
                                     if(buy != 'n'){
-                                        partyInventory.addGold(-cost);
+                                        mainParty.partyInventory_.addGold(-cost);
                                         for(int i = 0; i < quantity; i++){
-                                            partyInventory.addCookware(cook);
+                                            mainParty.partyInventory_.addCookware(cook);
                                         }
                                         //allows both loops to be exited
                                         type = 4;
@@ -256,7 +250,7 @@ void merchantMenu(party &mainParty, int &x){
                             else if(quantity != 0){
                                 cost = (quantity*wep.getCost())+(quantity*wep.getCost()*costChange);
                                 // checks to make sure that the party has enough gold to spend
-                                if(partyInventory.spendGold(cost) == false){
+                                if(mainParty.partyInventory_.spendGold(cost) == false){
                                     cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                                 }
                                 else {
@@ -266,9 +260,9 @@ void merchantMenu(party &mainParty, int &x){
                                     cout << endl;
                                     // only if they want to proceed with purchase
                                     if(buy != 'n'){
-                                        partyInventory.addGold(-cost);
+                                        mainParty.partyInventory_.addGold(-cost);
                                         for(int i = 0; i < quantity; i++){
-                                            partyInventory.addWeapons(wep);
+                                            mainParty.partyInventory_.addWeapons(wep);
                                         }
                                         // allows both loops to be exited
                                         type = 6;
@@ -300,7 +294,7 @@ void merchantMenu(party &mainParty, int &x){
                         // calculates the cost of the quantity
                         cost = (quantity*5)+(quantity*5*costChange);
                         // checks to make sure that the party has enough gold to spend
-                        if(partyInventory.spendGold(cost) == false){
+                        if(mainParty.partyInventory_.spendGold(cost) == false){
                             cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                         }
                         else{
@@ -310,8 +304,8 @@ void merchantMenu(party &mainParty, int &x){
                             cout << endl;
                             // if they would like to complete the purchase
                             if(buy != 'n'){
-                                partyInventory.addGold(-cost);
-                                partyInventory.addArmor(quantity);
+                                mainParty.partyInventory_.addGold(-cost);
+                                mainParty.partyInventory_.addArmor(quantity);
                                 // exits loop
                                 break;
                             }
@@ -323,7 +317,7 @@ void merchantMenu(party &mainParty, int &x){
             }
             case 5:{ // sell
                 // create a vector to hold the party's treasure
-                vector<treasure> partyTreasure = partyInventory.treasureAvailible();
+                vector<treasure> partyTreasure = mainParty.partyInventory_.treasureAvailible();
                 // bool to keep track of whether or not there is any treasure 
                 bool hasTreasure = false;
                 // checks if there is any treasure
@@ -359,7 +353,7 @@ void merchantMenu(party &mainParty, int &x){
                         }
                         else{
                             // creates the treasure objcet for the treasure type
-                            treasure treas = partyInventory.treasureAvailible().at(type-1);
+                            treasure treas = mainParty.partyInventory_.treasureAvailible().at(type-1);
                             // to check that the user does not want change type of treasue 
                             while(quantity != 0){
                                 cout << "How many would you like to sell? (Or 0 to cancel)\n" << endl;
@@ -378,8 +372,8 @@ void merchantMenu(party &mainParty, int &x){
                                     cout << endl;
                                     // if they do want to sell for that amount
                                     if(buy != 'n'){
-                                        partyInventory.addGold(cost);
-                                        partyInventory.changeTreasureQuantity(type-1,(-quantity));
+                                        mainParty.partyInventory_.addGold(cost);
+                                        mainParty.partyInventory_.changeTreasureQuantity(type-1,(-quantity));
                                         type = 6;
                                         break;
                                     }
