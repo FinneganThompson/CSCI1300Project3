@@ -2,7 +2,11 @@
 #include "Monster.h"
 #include "Sorcerer.h"
 #include "party.h"
-#include "Map.h"
+#include "RNG.h"
+#include <vector>
+#include <iostream>
+#include <fstream>
+
 
 /*
 Algorithm prints out everything that is in the party's inventory 
