@@ -7,6 +7,7 @@
 */
 
 #include "item.h"
+#include <iostream>
 
 #ifndef PARTY_H
 #define PARTY_H
@@ -68,15 +69,16 @@ class party{
         void investigate(); // 10% key; 20% treasure; 10% monster; no matter outcome 50% individual hunger drop chance
 
         void cookAndEat(); // Prompts for kg ingredients and cookware. Hunger increases are dist. equally
+        bool removeHunger(int playerPosition, int hungerToRemove); // Removes hunger from the player at position playerPosition in the players_ vector. Returns false if removing that much hunger would kill the player. 
 
-        void winBattle(int challengeRating, string monsterName); // Adds 10 * challenge coins and 5 * challenge kg of food to inventory, adds key 10% of time. 50% food drop by 1. Add monster to monsters defeated
+        void winBattle(string monsterName); // iterates num monsters defeated by 1 adds to monsters defeated. 50% chance for each player to lose one hunger
         void loseBattle(); // Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. Prints death message. 50% food drop by 1. 
         void surrenderBattle(); // Party loses one non-main member and items as appropiate. 50% food drop by 1. 
- 
+
 
         vector<player> starvingPlayers(); // Returns all starving players
         partyStatus getStatus(); // Returns filled status
-        partyDependentAttackContributors getPartyDependentAttackContributors(); // Returns filled struct. 
+        // partyDependentAttackContributors getPartyDependentAttackContributors(); // Returns filled struct. 
 
         void killPlayerNoMessage(string name); // Removes player and items as appropriate
         void killPlayerOfHunger(string name); // Removes player + items and prints hunger death message
