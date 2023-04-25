@@ -31,4 +31,4 @@ Enter the switch statement
 (Each option)
 */
 
-void merchantMenu(party &mainParty, int &x);
+void merchantMenu(party &mainParty);
