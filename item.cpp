@@ -214,6 +214,17 @@ void inventory::addWeapons(weapon weaponToAdd)
     return;
 }
 
+bool inventory::removeWeapon(int weaponToRemove)
+{
+    if (weapons_.size() > weaponToRemove)
+    {
+        weapons_.erase(weapons_.begin() + weaponToRemove);
+        return true;
+    }
+    else return false;
+}
+
+
 // Add armor to inventory
 void inventory::addArmor(int inputArmor){
     if((armor_ + inputArmor) <= 5){
