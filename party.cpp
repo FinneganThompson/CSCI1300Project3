@@ -8,6 +8,7 @@
 
 #include "party.h"
 #include "item.h"
+#include "RNG.h"
 
 // Default constructor, sets all values to 0
 party::party()
@@ -55,22 +56,87 @@ void party::cookAndEat()
     return;
 }
 
-// !! TO DO: ADD PROBABILTIES !! Adds 10 * challenge coins and 5 * challenge kg of food to inventory, 
-// adds key 10% of time. 50% food drop by 1. Add monster to monsters defeated
-void party::winBattle(int challengeRating, string monsterName)
+// Removes hunger from player at player position. Returns false if removing that much would kill anyone
+bool party::removeHunger(int playerPosition, int hungerToRemove)
 {
-    partyInventory_.addGold(challengeRating*10);
-    int kiloOfIngredients = 5 * challengeRating;
+    if (hungerToRemove >= players_.at(playerPosition).hunger)
+    {
+        return false;
+    }
+    else 
+    {
+        players_.at(playerPosition).hunger -= hungerToRemove;
+        return true;
+    }
+}
 
-    partyInventory_.setIngredients(partyInventory_.totalIngredientsAvliable() + kiloOfIngredients);
-    return;
+// iterates num monsters defeated by 1 adds to monsters defeated. 50% chance for each player to lose one hunger
+void party::winBattle(string monsterName)
+{
+  RNG randomGenerator;
+  monstersDefeated_.push_back(monsterName); // Add name to monsters defeated
+  numMonstersDefeated_++; // iterate num monsters defeated
+  
+  // 50% chance for each player to lose one hunger
+  for (int i=0; i<players_.size(); i++)
+  {
+    if (randomGenerator.doesActionOccur(50))
+    {
+        if (removeHunger(i,1)) continue;
+        else killPlayerOfHunger(players_.at(i).name);
+    }
+  }
+  return;
 }
 
 // !! TO DO !! Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. 
 //Prints death message if neccesary. 50% food drop by 1. 
 void party::loseBattle()
 {
-    return;
+    RNG randomGenerator;
+    int goldToLose = partyInventory_.goldAvalible() / 4;
+    int ingredientsToLose = randomGenerator.randIntOnRange(0,30);
+
+    for (int i = 0; i<players_.size(); i++)
+    {
+        if (partyInventory_.armorAvalible()-i >= 0 && !players_.at(i).isUserPlayer)  // Check to see if this user is wearing armor and is not the main player
+        {
+            if (randomGenerator.doesActionOccur(5))
+            {
+                cout << players_.at(i).name << " has died in the battle." << endl;
+                killPlayerNoMessage(players_.at(i).name);
+            }
+        }
+        else if (partyInventory_.armorAvalible()-i < 0 && !players_.at(i).isUserPlayer)
+        {
+           if (randomGenerator.doesActionOccur(10))
+            {
+                cout << players_.at(i).name << " has died in the battle." << endl;
+                killPlayerNoMessage(players_.at(i).name);
+            } 
+        }
+        
+    }
+
+    partyInventory_.spendGold(goldToLose);
+
+    if (ingredientsToLose > partyInventory_.totalIngredientsAvliable())
+    {
+        partyInventory_.addIngredients(-partyInventory_.totalIngredientsAvliable());
+    }
+    else partyInventory_.addIngredients(-ingredientsToLose);
+
+    cout << "You have lost the battle. You lost" << goldToLose << "gold, and " << ingredientsToLose << " ingredients." << endl;
+
+  // 50% chance for each player to lose one hunger
+  for (int i=0; i<players_.size(); i++)
+  {
+    if (randomGenerator.doesActionOccur(50))
+    {
+        if (removeHunger(i,1)) continue;
+        else killPlayerOfHunger(players_.at(i).name);
+    }
+  }
 }
 
 // !! TO DO !! Party loses one non-main member and their items as appropiate. 50% food drop by 1. 
