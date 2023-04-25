@@ -401,3 +401,337 @@ void merchantMenu(party mainParty){
         }
     }
 }
+
+
+
+//Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
+/*
+robbed (chosen at random) 30%
+    lose ingredients (10kg)
+    cookware (1 item)
+    armor (1 item( break either weapon or armor 10% food poisoning one member loses 10 hunger points (can kill) 
+    30% locked in room: only happens if player tries to open door with key (nothing happens if picked when not open door) 
+    30% One random member that is not leader (can end game if no more members)
+*/
+
+
+/*
+Splits a string at a given seperator an puts it into an array
+*/
+
+int split(string inputString, char seperator, string peiceArray[], int peiceArraySize)
+{   
+    int lastSeperatorLocation = 0;
+    int seperatorsFound = 0;
+
+    if (inputString.length() == 0) // Empty strings retunrn 0 by project spec
+    {
+        return 0;
+    }
+
+    for (int i = 0; i < inputString.length()+1; i++) //Iterate through all elements in the string
+    {
+        if (((inputString[i]  == seperator) && peiceArraySize > seperatorsFound) || i == inputString.length() ) // If we encounter the seperator and still have room in our array we will evaluate the following
+        {
+
+            peiceArray[seperatorsFound] = inputString.substr(lastSeperatorLocation,(i-lastSeperatorLocation)); // Setting the next avalible location in the array to the string before the found seperator
+            lastSeperatorLocation = i+1; // We do not include the seperator in our new array, so we set the location one higher than actual
+            seperatorsFound++;
+        }
+
+        else if (peiceArraySize <= seperatorsFound) // If the array is too small retunrn -1
+        {
+            return -1;
+        }
+    }
+
+    if (lastSeperatorLocation == 0) // If there are no seperators all the whole string goes into the array
+    {
+        peiceArray[0] = inputString;
+        return 1;
+    }
+    
+
+
+    return seperatorsFound;
+
+}
+
+
+bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithKey)
+{
+    RNG randomGenerator;
+    bool doesMisfortuneHappen = randomGenerator.doesActionOccur(40); // 40% chance of action ocurring
+    if (!doesMisfortuneHappen) return false;    
+
+    // Robbed misfortune
+    bool isMisfortuneRobbed = randomGenerator.doesActionOccur(30);
+    if (isMisfortuneRobbed)
+    {
+        int robbedRandomInt = randomGenerator.randIntOnRange(0,2);
+        switch(robbedRandomInt)
+        {
+            case 0: // subtract 10 kg of ingredients, print robbed messauge
+
+                if (mainParty.partyInventory_.totalIngredientsAvliable() >= 10){ // Only if we have sufficient ingredients can we take any away
+                    mainParty.partyInventory_.addIngredients(-10);
+                    cout << "OH NO! Your team was robbed by dungeon bandits!" << '\n' << "You lost 10kg of ingredients." << endl;
+                    return true;
+                    break;
+                }
+                else return false; // If we don't have ingredients, there is no misfotune
+            case 1: // lose 1 armor
+                if (mainParty.partyInventory_.removeArmor(1) == true){ // Make sure we have armor to remove
+                    cout << "OH NO! Your team was robbed by dungeon bandits!" << '\n' << "You lost 1 armor." << endl;
+                    return true;
+                    break;
+                }
+                else return false; // If we don't have armor, there is no misfortune
+            case 3: // lose 1 cookware
+                vector<cookware> cookwareVect = mainParty.partyInventory_.cookwareAvailible(); // Get our cookware
+                if (mainParty.partyInventory_.removeCookware(1) == true) // Remove one cookware if we can
+                {
+                    string cookwareTypeRemovedString = cookwareVect.at((cookwareVect.size() - 1)).getType(); // Get the type of the cookware we removed
+                    char cookwareTypeRemovedChar = cookwareTypeRemovedString[0];
+                    string cookwareType;
+                    switch(cookwareTypeRemovedChar) // Change our type char to a string
+                    {
+                        case 'P':
+                            cookwareType = "Pot";
+                            break;
+                        case 'F':
+                            cookwareType = "Frying Pan";
+                            break;
+                        case 'C':
+                            cookwareType = "Cauldron";
+                            break;
+
+                    }
+                    cout << "OH NO! Your team was robbed by dungeon bandits!" << '\n' << "You lost 1 " << cookwareType << "." << endl;
+                    return true;
+                    break;
+                }
+
+        }
+
+
+        return false;
+    }
+    // Broken weapon or armor misforutne
+    bool isMisfortuneBrokenWeaponOrArmor = randomGenerator.doesActionOccur(10);
+    if (isMisfortuneBrokenWeaponOrArmor)
+    {
+        bool doesArmorBreak = randomGenerator.doesActionOccur(50);
+        if(doesArmorBreak && mainParty.partyInventory_.removeArmor(1) == true) // Make sure we have armor to remove
+        {
+            cout << "OH NO! One of your armor sets broke." << endl;
+            return true;
+        }
+        else  // Weapon breaks
+        {
+            // Copy in our weapons and randomly select one to break. 
+            vector<weapon> weapons = mainParty.partyInventory_.weaponsAvalible();
+            int randWeapon = randomGenerator.randIntOnRange(0,(weapons.size()-1));
+            // Remove the weapon but keep its information
+            weapon weaponToRemove = weapons.at(randWeapon);
+            mainParty.partyInventory_.removeWeapon(randWeapon);
+
+            // Print out our misfortune statements
+            string weaponName;
+            char weaponToRemoveChar = weaponToRemove.getType()[0];
+            switch (weaponToRemoveChar)
+            {
+                case 'C':
+                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " club broke!" << endl;
+                    return true;
+                    break;
+                case 'S':
+                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " spear broke!" << endl;
+                    return true;
+                    break;
+                case 'R':
+                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " spear broke!" << endl;
+                    return true;
+                    break;
+                case 'B':
+                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " battle axe broke!" << endl;
+                    return true;
+                    break;
+                case 'L':
+                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " longsword broke!" << endl;
+                    return true;
+                    break;
+            }
+
+        }
+
+        return false; // should never occur
+    }
+    // Food Posisoning Misfortune
+    bool isFoodPoisoningMisfortune = randomGenerator.doesActionOccur(30); // 30% chance
+    if (isFoodPoisoningMisfortune)
+    {
+        // Find the random player to make hungry
+        int randPlayerToRemoveHungerFrom = randomGenerator.randIntOnRange(0,(mainParty.getPlayers().size()-1));
+        // Try to remove hunger
+        bool couldRemoveHunger = mainParty.removeHunger(randPlayerToRemoveHungerFrom, 10);
+        // If removing the hunger would kill them, do so
+        if (!couldRemoveHunger)
+        {
+            // Get the name of the player to kill
+            vector<player> tempPlayers = mainParty.getPlayers();
+            string playerNameToRemove = tempPlayers.at(randPlayerToRemoveHungerFrom).name;
+            // Kill the player
+            mainParty.killPlayerOfHunger(playerNameToRemove);
+        }
+    }
+
+    // Locked in room misfortune
+    if (wasLastActionExitRoomOpenedWithKey)
+    {
+        // Get our players
+        vector<player> tempPlayers = mainParty.getPlayers();
+        player playerToBeLeftBehind;
+        do
+        {
+            // Select a player to be left behing
+            playerToBeLeftBehind = tempPlayers.at(randomGenerator.randIntOnRange(0,tempPlayers.size()-1));
+        }
+        while (playerToBeLeftBehind.isUserPlayer); // Make sure this player is not the party leader
+        mainParty.killPlayerNoMessage(playerToBeLeftBehind.name); // Kill the player w/o a death message
+        // Print the left behind message
+        cout << "OH NO! Your teammate " << playerToBeLeftBehind.name << " is trapped in the previous room and is unable to get through. You must continue without them."
+        << '\n' <<  "Your party size has reduced to " << tempPlayers.size()-1 << " members." << endl;
+        return true;
+    }
+
+    return false; // Should never occur
+
+}
+
+
+// Read in monsters to the monsters vector from a file
+bool readInMonsters(vector<Monster> &monsters, string filename)
+{
+    ifstream monsterFile; 
+    monsterFile.open(filename);
+    if(!monsterFile.is_open())
+    {
+        return false;
+    }
+
+    while (!monsterFile.eof()) // Read in all riddles from the file
+    {
+        string tempLine;
+        string tempArr[2]; 
+        getline(monsterFile, tempLine);
+        
+        int splitLineReturn = split(tempLine, ',', tempArr, 2); // Split each line into riddle and answer
+
+        if (splitLineReturn == 2) 
+        {
+            Monster tempMonster = Monster(tempArr[0], stoi(tempArr[1])); // Add monsters to vector
+            monsters.push_back(tempMonster);
+        }
+    }
+
+    monsterFile.close(); 
+    return true;
+}
+
+// Party fights the mosnter
+bool fightMonster(vector<Monster> &monsters, party &mainParty)
+{
+    if (monsters.size() == 0) // No monsters left to fight
+    {
+        cout << '\n' << "It looks like you've killed all the monsters..." << endl;
+        return true;
+    }
+    RNG randomGenerator; 
+    int w = 0; // Variables from writeup formula
+    int d = 0;
+    int a = 0;
+    int c = 0;
+
+    int r1 = randomGenerator.randIntOnRange(1,6);
+    int r2 = randomGenerator.randIntOnRange(1,6);
+
+    vector<weapon> weapons = mainParty.partyInventory_.weaponsAvalible();
+
+    for (int i=0; i<weapons.size(); i++) // Add up all the weapon modifiers
+    {
+        w += weapons.at(i).getMod();
+    }
+
+    bool areAllWeaponsUnique = true; // Check to see if all players have unique weapons
+    for (int i=0; i<weapons.size(); i++)
+    {
+        for (int j=0; j<weapons.size(); j++)
+        {
+            if (weapons.at(i).getType() == weapons.at(j).getType())
+            {
+                areAllWeaponsUnique = false;
+            }
+        }
+    }
+
+
+    if (areAllWeaponsUnique) // Unique weapons modifier
+    {
+        d = 4;
+    }
+
+    a = mainParty.partyInventory_.armorAvalible();
+
+    // Randomly Choose a Monster
+    int randomMonster = randomGenerator.randIntOnRange(0, monsters.size() - 1);
+    Monster monsterToFight = monsters.at(randomMonster);
+    
+    // Remove the monster from the array so we don't see it again
+    monsters.erase(monsters.begin() + randomMonster);
+
+    c = monsterToFight.getLevel();
+    
+    // calculate the battle outcome
+    double outcomeOfBattle = ((r1*w)+d)-((r2*c)/a);
+    cout << '\n' << "You have chosen to fight " << monsterToFight.getName() << ". Prepare for battle!" << endl;
+    cout << "(Press enter to see who wins!)" << endl;
+    // Wait for the user to hit enter (for suspense)
+    cin.ignore();
+
+    // Wins battle
+    if (outcomeOfBattle > 0)
+    {
+        int goldToCollect = c * 10; // Spoils to add to player inventory
+        int ingredientsToCollect = 5 * c;
+        bool isKeyDropped = randomGenerator.doesActionOccur(10);
+        mainParty.partyInventory_.addIngredients(ingredientsToCollect);
+        mainParty.partyInventory_.addGold(goldToCollect);
+        
+        if (isKeyDropped) // 10% of key being dropped
+        {
+            mainParty.increaseKeysFound();
+            mainParty.winBattle(monsterToFight.getName());
+            cout << "You have won the battle! You collect " << goldToCollect << " Gold Coins, "
+            << ingredientsToCollect << " Kg of ingredients, and 1 key!" << endl;
+            return true;
+        }
+
+        else 
+        { // No key drop
+            mainParty.winBattle(monsterToFight.getName());
+            cout << "You have won the battle! You collect " << goldToCollect << " Gold Coins, and "
+            << ingredientsToCollect << " Kg of ingredients!" << endl;
+            return true;
+        }
+
+    }
+
+    else 
+    {  // All losing functionality handled in party class
+        mainParty.loseBattle();
+        return false;
+    }
+
+
+}
