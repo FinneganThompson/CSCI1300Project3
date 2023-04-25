@@ -50,7 +50,7 @@ for room spaces
 // to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp
 
 
-void phase1(party &mainParty, int &x){
+void phase1(party &mainParty){
     // creates the player objects for the party
     player partyLeader, member1, member2, member3, member4;
     partyLeader.isUserPlayer = true;
@@ -78,13 +78,7 @@ void phase1(party &mainParty, int &x){
     "- ARMOR. Armor increases the chances of surviving a monster attack.\n" << endl <<
     "You can spend all of your money here before you start your journey, or you can save some to spend on merchants along the way." << endl << 
     "But beware, some of the merchants in this dungeon are shady characters, and they won't always give you a fair price...\n" << endl;
-    merchantMenu(mainParty, x);
-    /*vector<player> players = mainParty.getPlayers();
-    for(int i = 0; i < 5; i++){
-        cout << players.at(i).isUserPlayer << endl;
-    }*/
-    //x ++;
-    cout << x << endl;
+    merchantMenu(mainParty);
 }
 
 void statusUpdate(party mainParty, Sorcerer gameSorcerer){
@@ -127,15 +121,11 @@ int main(){
     xNPC = rand() % 12, yNPC = rand() % 12;
     mainMap.addNPC(xNPC,yNPC);
     }
-    int x = 0;
     Sorcerer gameSorcerer("Sorcerer", 6);
-    phase1(mainParty,x);
-    cout << mainParty.partyInventory_.goldAvalible() << endl;
+    phase1(mainParty);
     /*while(s.getAnger() != 100 || giveUp || dies){
         phase2(gameSorcerer, mainMap, mainParty);
     }*/
-    cout << x << endl;
-    printInventory(mainParty.partyInventory_);
     phase2(gameSorcerer, mainMap, mainParty);
     return 0;
 }
