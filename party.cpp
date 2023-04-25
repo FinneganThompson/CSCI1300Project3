@@ -80,9 +80,9 @@ void party::winBattle(string monsterName)
   // 50% chance for each player to lose one hunger
   for (int i=0; i<players_.size(); i++)
   {
-    if (randomGenerator.doesActionOccur(50))
+    if (randomGenerator.doesActionOccur(50)) 
     {
-        if (removeHunger(i,1)) continue;
+        if (removeHunger(i,1)) continue; // If losing the 1 hunger would kill them, kill them. 
         else killPlayerOfHunger(players_.at(i).name);
     }
   }
@@ -94,9 +94,10 @@ void party::winBattle(string monsterName)
 void party::loseBattle()
 {
     RNG randomGenerator;
-    int goldToLose = partyInventory_.goldAvalible() / 4;
-    int ingredientsToLose = randomGenerator.randIntOnRange(0,30);
+    int goldToLose = partyInventory_.goldAvalible() / 4; // Gold to lose
+    int ingredientsToLose = randomGenerator.randIntOnRange(0,partyInventory_.totalIngredientsAvliable()/2); // Ingredients to lose (cannot lose more than half)
 
+    // Go through all players and check to see if they die
     for (int i = 0; i<players_.size(); i++)
     {
         if (partyInventory_.armorAvalible()-i >= 0 && !players_.at(i).isUserPlayer)  // Check to see if this user is wearing armor and is not the main player
@@ -106,7 +107,7 @@ void party::loseBattle()
                 cout << players_.at(i).name << " has died in the battle." << endl;
                 killPlayerNoMessage(players_.at(i).name);
             }
-        }
+        } // Player has no armor
         else if (partyInventory_.armorAvalible()-i < 0 && !players_.at(i).isUserPlayer)
         {
            if (randomGenerator.doesActionOccur(10))
@@ -117,14 +118,11 @@ void party::loseBattle()
         }
         
     }
-
+    // Remove the gold
     partyInventory_.spendGold(goldToLose);
 
-    if (ingredientsToLose > partyInventory_.totalIngredientsAvliable())
-    {
-        partyInventory_.addIngredients(-partyInventory_.totalIngredientsAvliable());
-    }
-    else partyInventory_.addIngredients(-ingredientsToLose);
+    // Remove the ingredients 
+    partyInventory_.addIngredients(-ingredientsToLose);
 
     cout << "You have lost the battle. You lost" << goldToLose << "gold, and " << ingredientsToLose << " ingredients." << endl;
 
