@@ -49,21 +49,8 @@ for room spaces
 
 // to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp
 
-//void placeRooms
 
-// generate map (Need to look into how to do so)
-void phase1(){
-    // creates map
-    Map mainMap;
-    // create random ints
-    for(int i = 0; i < 6; i++){
-    int xRoom = rand() % 12, yRoom = rand() % 12;
-    mainMap.addRoom(xRoom,yRoom);
-    /*int xNPC = rand() % 12, yNPC = rand() % 12;
-    mainMap.addNPC(xNPC,yNPC);*/
-    }
-    // displays map
-    mainMap.displayMap();
+void phase1(party &mainParty, int &x){
     // creates the player objects for the party
     player partyLeader, member1, member2, member3, member4;
     partyLeader.isUserPlayer = true;
@@ -78,14 +65,12 @@ void phase1(){
     member2.hunger = 50;
     member3.hunger = 50;
     member4.hunger = 50;
-    party mainParty;
     mainParty.addPlayer(partyLeader);
     mainParty.addPlayer(member1);
     mainParty.addPlayer(member2);
     mainParty.addPlayer(member3);
     mainParty.addPlayer(member4);
     mainParty.partyInventory_.addGold(100);
-    Sorcerer s("Sorcerer", 6);
     cout << "Between the 5 of you, you have 100 gold pieces.\nYou will need to spend the some of your money on the following items:\n" << endl;
     cout << "- INGREDIENTS. To make food, you have to cook raw ingredients." << endl <<
     "- COOKWARE. If you want to cook, you have to have cookware first." << endl << 
@@ -93,23 +78,65 @@ void phase1(){
     "- ARMOR. Armor increases the chances of surviving a monster attack.\n" << endl <<
     "You can spend all of your money here before you start your journey, or you can save some to spend on merchants along the way." << endl << 
     "But beware, some of the merchants in this dungeon are shady characters, and they won't always give you a fair price...\n" << endl;
-    //merchantMenu(mainParty);
+    merchantMenu(mainParty, x);
     /*vector<player> players = mainParty.getPlayers();
     for(int i = 0; i < 5; i++){
         cout << players.at(i).isUserPlayer << endl;
     }*/
+    //x ++;
+    cout << x << endl;
 }
 
-void phase2(){
+void statusUpdate(party mainParty, Sorcerer gameSorcerer){
+    cout << "+-------------+\n| STATUS      |\n+-------------+\n| Rooms Cleared: " << mainParty.getRoomsCleared() << " | Keys: " << mainParty.getKeysFound() << 
+    " | Anger Level: " << gameSorcerer.getAnger() << endl;
+    printInventory(mainParty.partyInventory_);
+    vector<player> partyMembers = mainParty.getPlayers();
+    cout << "+-------------+\n| PARTY       |\n+-------------+" << endl;
+    for(int i = 0; i < partyMembers.size(); i++){
+        cout << "| " << partyMembers.at(i).name << " | Fullness: " << partyMembers.at(i).hunger << endl;
+    }
+    cout << "+-------------+\n" << endl;
+}
 
+
+void phase2(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
+    statusUpdate(mainParty,gameSorcerer);
+    mainMap.displayMap();
+    /*
+    if(mainMap.isFreeSpace() == true){
+
+    }
+    else if(mainMap.isNPCLocation() == true){
+
+    }
+
+    gameSorcerer.increaseAnger();
+    */
 }
 
 int main(){
-    //Sorcerer s("Sorcerer", 6);
-    phase1();
-    /*while(s.getAnger() != 100){
-        phase2();
+    party mainParty;
+    // creates map
+    Map mainMap;
+    srand(time(NULL));
+    int xNPC, yNPC;
+    for(int i = 0; i < 6; i++){
+    int xRoom = rand() % 12, yRoom = rand() % 12;
+    mainMap.addRoom(xRoom,yRoom);
+    xNPC = rand() % 12, yNPC = rand() % 12;
+    mainMap.addNPC(xNPC,yNPC);
+    }
+    int x = 0;
+    Sorcerer gameSorcerer("Sorcerer", 6);
+    phase1(mainParty,x);
+    cout << mainParty.partyInventory_.goldAvalible() << endl;
+    /*while(s.getAnger() != 100 || giveUp || dies){
+        phase2(gameSorcerer, mainMap, mainParty);
     }*/
+    cout << x << endl;
+    printInventory(mainParty.partyInventory_);
+    phase2(gameSorcerer, mainMap, mainParty);
     return 0;
 }
 
@@ -120,8 +147,10 @@ You will see other vendors out there and while we all cary similar good, are pri
 will print thank you even if cancelled could make bool or leave it
 clean up responses and add parts that use type in response
 
-get map to print properly
-make player set randomly
-use rng to make it put rooms and npcs randomly
-make sure it excluses spaces already taken
+phase 1 does not modify anything, even when adding the &
+erro is either in what is being counted or in what is being returned 
+works for int x but not printing the values
+phase 1 does not moddify the party's gold for the new value
+
+we know phase 1 is modifiying the party members and can modify things even if the change is from the merchant menu
 */
