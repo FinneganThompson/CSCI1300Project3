@@ -2,11 +2,7 @@
 #include "Monster.h"
 #include "Sorcerer.h"
 #include "party.h"
-#include "RNG.h"
-#include <vector>
-#include <iostream>
-#include <fstream>
-
+#include "Map.h"
 
 /*
 Algorithm prints out everything that is in the party's inventory 
@@ -35,14 +31,4 @@ Enter the switch statement
 (Each option)
 */
 
-void merchantMenu(party mainParty);
-
-
-// Randomly causes one of the end of turn misfortunes to the party
-bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithKey);
-
-// Reads in monsters to the provided vector from the file
-bool readInMonsters(vector<Monster> &monsters, string filename);
-
-// Complete fight sequence
-bool fightMonster(vector<Monster> &monsters, party &mainParty);
+void merchantMenu(party &mainParty, int &x);
