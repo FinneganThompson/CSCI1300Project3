@@ -785,18 +785,27 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer)
             else if (j=0)
             {
                 cout << "Wrong! You have one more try. " << endl;
+                continue;
             }
             else
             {
                 cout << "You have failed! Now face the consequences..." << endl;
                 mainParty.loseGame(4);
+                return false;
             }
         }
 
+    }
+    if (correctAns[1] && correctAns[0])
+    {
+        cout << "You have defeated me in a battle of wits! My dungeon is now yours." << endl;
+        return true;
     }
 
     
 
 }
+
+
 
 
