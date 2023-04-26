@@ -140,6 +140,28 @@ void party::loseBattle()
 // !! TO DO !! Party loses one non-main member and their items as appropiate. 50% food drop by 1. 
 void party::surrenderBattle()
 {
+    RNG randomGenerator;
+    cout << "You have chosen to surrender this battle." << endl;
+    int playerToKill = 0;
+
+    do
+    {
+        playerToKill = randomGenerator.randIntOnRange(0,players_.size() - 1);
+    } while (players_.at(playerToKill).isUserPlayer);
+    cout << players_.at(playerToKill).name << " has been killed." << endl;
+    killPlayerNoMessage(players_.at(playerToKill).name);
+
+
+    // 50% chance for each player to lose one hunger
+    for (int i=0; i<players_.size(); i++)
+    {
+        if (randomGenerator.doesActionOccur(50))
+        {
+            if (removeHunger(i,1)) continue;
+            else killPlayerOfHunger(players_.at(i).name);
+        }
+    }
+
     return;
 }
 
@@ -172,9 +194,12 @@ Sorcerer’s anger
  // !! TO DO !! Returns all of the contributors to the sucess of an attack that are parts of the party class.
 // partyDependentAttackContributors getPartyDependentAttackContributors()
 
-// !! TO DO: REMOVE ITEMS !! Removes a player and thier items as appropriate
+
+// Removes a player and thier items as appropriate
 void party::killPlayerNoMessage(string name)
 {
+    partyInventory_.removeArmor(1);
+    partyInventory_.removeWeapon(0);
     for(int i=0; i<players_.size(); i++) // Loop through all players
     {
         if (players_.at(i).name == name) // Find one with the correct name
@@ -186,10 +211,12 @@ void party::killPlayerNoMessage(string name)
     return;
 }
 
-// !! TO DO !! Removes player + items and prints hunger death message
-void killPlayerOfHunger(string name)
+// Removes player + items and prints hunger death message
+void party::killPlayerOfHunger(string name)
 {
-    return; // Add printing death message
+    cout << name <<" has died of hunger. Your party grows smaller..." << endl;
+    killPlayerNoMessage(name);
+    return;
 }
 
 // !! TO DO !! Game win: Print out nesary info from party class
@@ -201,13 +228,92 @@ void killPlayerOfHunger(string name)
     number of spaces explored
     number of monsters defeated
 */
-void winGame()
+void party::winGame()
 {
+    cout << "You have won the game!\n" << "Your party leader is: \n";
+    for(int i=0; i<players_.size(); i++)
+    {
+        if (players_.at(i).isUserPlayer)
+        {
+            cout << players_.at(i).name << endl;
+            break;
+        }
+    }
+    cout << "The remaning players in your party are:\n";
+    for(int i=0; i<players_.size(); i++)
+    {
+        if (!players_.at(i).isUserPlayer)
+        {
+            cout << players_.at(i).name << endl;
+            break;
+        }
+    }
+    
+    cout << "Rooms cleared: " << roomsCleared_ << endl;
+    cout << "Gold remaining: " << partyInventory_.goldAvalible() << endl;
+    cout << "Currently held treasure items: \n";
+    vector<treasure> treasuresGotten = partyInventory_.treasureAvailible();
+    for (int i=0; i<treasuresGotten.size();i++)
+    {
+        cout << treasuresGotten.at(i).getType() << endl;
+    }
+    cout << "Spaces explored: " << spacesExplored_ << endl;
+    cout << "Monsters defeated: " << numMonstersDefeated_ << endl;
     return;
 }
 
-// Game is lost. Print same info as win. Type 0:Give up; 1: all but main player die; 2: main player dies; 3: Sorcerer's anger
-void loseGame(int deathType)
-{
+// Game is lost. Print same info as win. Type 0:Give up; 1: all but main player die; 2: main player dies; 3: Sorcerer's anger; 4: sorcerer kills them.
+void party::loseGame(int deathType)
+{   
+    // Reasons why the player lost
+    switch(deathType)
+    {
+        case 0:
+            cout << "You gave up the game. It's not really that hard..." << endl;
+            break;
+        case 1:
+            cout << "Everyone but you has died... You cannot continue without your party." << endl;
+            break;
+        case 2:
+            cout << "You died, and your party cannot continue on without you." << endl;
+            break;
+        case 3:
+            cout << "The Sorcerer's anger has overwhelmed the dungeon, and all in it have perished." << endl;
+            break;
+        case 4:
+            cout << "The Sorcerer has killed all of your party with a powerfull spell." << endl;
+            break;
+        default:
+            cout << "You have lost the game" << endl;
+    }
+    for(int i=0; i<players_.size(); i++)
+    {
+        if (players_.at(i).isUserPlayer)
+        {
+            cout << players_.at(i).name << endl;
+            break;
+        }
+    }
+    cout << "The remaning players in your party are:\n";
+    for(int i=0; i<players_.size(); i++)
+    {
+        if (!players_.at(i).isUserPlayer)
+        {
+            cout << players_.at(i).name << endl;
+            break;
+        }
+    }
+    
+    cout << "Rooms cleared: " << roomsCleared_ << endl;
+    cout << "Gold remaining: " << partyInventory_.goldAvalible() << endl;
+    cout << "Currently held treasure items: \n";
+    vector<treasure> treasuresGotten = partyInventory_.treasureAvailible();
+    for (int i=0; i<treasuresGotten.size();i++)
+    {
+        cout << treasuresGotten.at(i).getType() << endl;
+    }
+    cout << "Spaces explored: " << spacesExplored_ << endl;
+    cout << "Monsters defeated: " << numMonstersDefeated_ << endl;
+    return;
     return;
 }
