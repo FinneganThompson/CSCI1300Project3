@@ -1,0 +1,10 @@
+RAM stands for ______ access memory (lowercase, one word)~random
+CPU stands for centeral ________ unit (lowercase, one word)~processing
+FIFO stands for first __ first out (lowercase, one word)~in
+C++ was orginially called C with what? (lowercase, one word)~classes
+C++ was invented by Bjarne ________ (lowercase, one word)~stroustrup
+The 0x prefix indicates numbers in what base? (one integer)~16
+C++ allows for _____ oriented programming (lowercase, one word)~object
+\0 is called the ____ terminator (lowercase, one word)~null
+The numbers in this common base, in computer science called _____, form the elements of the Galois Field GF(2) (lowercase, one word)~binary
+In C++ = is an ________ operator~assignment
