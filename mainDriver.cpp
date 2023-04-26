@@ -81,12 +81,24 @@ void phase1(party &mainParty){
     merchantMenu(mainParty);
 }
 
+/*
+Algorithm prints out a status update, to be used at the start of every turn
+Accepts a party object and a sorcerer object
+Print out the number of rooms cleared, keys found, and the anger level of the sorcerer
+Print the inventory by calling the print inventory function
+Print out the fullness of the player and all party members
+*/
+
 void statusUpdate(party mainParty, Sorcerer gameSorcerer){
+    // prints out the rooms cleared, keys found, and sorcerer anger
     cout << "+-------------+\n| STATUS      |\n+-------------+\n| Rooms Cleared: " << mainParty.getRoomsCleared() << " | Keys: " << mainParty.getKeysFound() << 
     " | Anger Level: " << gameSorcerer.getAnger() << endl;
+    // calls print inventory to print the inventory
     printInventory(mainParty.partyInventory_);
     vector<player> partyMembers = mainParty.getPlayers();
     cout << "+-------------+\n| PARTY       |\n+-------------+" << endl;
+    // maybe add check here for starvation/ if too few members
+    // loop through all the party members and print out their fullness
     for(int i = 0; i < partyMembers.size(); i++){
         cout << "| " << partyMembers.at(i).name << " | Fullness: " << partyMembers.at(i).hunger << endl;
     }
@@ -94,23 +106,160 @@ void statusUpdate(party mainParty, Sorcerer gameSorcerer){
 }
 
 
+//move funtion
+void move(Map &mainMap, party &mainParty){
+    RNG random;
+    char moveChoice;
+    bool okayMove = false;
+    while(okayMove == false){
+        cout << "Where would you like to go? (w to go up, s to go down, a to go left, and d to go right)\n" << endl;
+        cin >> moveChoice;
+        cout << endl;
+        if(mainMap.move(moveChoice) != false){ 
+            okayMove = true;
+        }
+        else{
+            cout << "Ouch, looks like you've walked into a wall. Maybe try going a different direction or use lowercase input.\n" << endl;
+        }
+    }
+    for(int i = 0; i < mainParty.getPlayers().size(); i++){
+        if(random.doesActionOccur(20) == true){
+            // need to sort out what to do if it will kill
+            mainParty.removeHunger(i,1);
+        }
+    }
+}
+
+/*
+for normal spaces:
+	move (20% chance fullness drops 1 point)
+	investigate (50% chance fullness drops 1 point unless fought monster) 
+		find key
+		find treasure
+		find random monster
+	pick a fight 
+	cook and eat
+	give up
+*/
+
+void cookAndEat(party &mainParty){
+    cout << "In order to cook a meal, you must have at least 5kg of ingredients and can only cook in 5kg increments." << endl <<
+    "For each 5kg of ingredients cooked, your whole party will gain back 1 fullness point.\n" << endl;
+    if(mainParty.partyInventory_.totalIngredientsAvliable() < 5){
+        cout << "Unfortunately it looks like you don't have enough ingredients for a meal, better hope you find a merchant!\n"<< endl;
+    }
+    else{
+        RNG random;
+        int quantity = mainParty.partyInventory_.totalIngredientsAvliable() + 1;
+        while(quantity > mainParty.partyInventory_.totalIngredientsAvliable()){
+            cout << "How much would you like to cook?\n" << endl;
+            cin >> quantity;
+            cout << endl;
+            if(quantity > mainParty.partyInventory_.totalIngredientsAvliable()){
+                cout << "You don't have enough ingredients for that.\n" << endl;
+            }
+            else{
+                
+                /*
+                ask what they would like to cook with
+                find index of first instance
+                see if cookware breaks
+                if it does break erase it from the vector (print message)
+                if it does not, increase fullness (print message)
+                after either display the fullness levels of each party member, as well as the remaining number of kg of food.
+                */
+                // use tp lower
+                //if())
+                //mainParty.partyInventory_.useCookware();
+                cout << "What would you like to cook with?\n" << endl;
+                //cin >> 
+            }
+        }
+
+    }
+}
+
+void normalSpace(Map &mainMap, party &mainParty){
+    vector<string> turnOptions = {"Move to a different space","Investigate the space you are on","Pick a fight with a monster",
+    "Cook and eat","Give up on your adventure"};
+    int spaceChoice;
+    char proceed = 'n';
+    while(proceed == 'n'){
+        cout << "You are on a normal space, here are your options:" << endl;
+        for(int i = 0; i < turnOptions.size(); i++){
+            cout << i+1 << ". " << turnOptions.at(i) << "." << endl;
+        }
+        cout << endl;
+        cin >> spaceChoice;
+        cout << endl;
+        if(spaceChoice < 1 || spaceChoice > 5){
+            cout << "Please only enter an integer between 1-5.\n" << endl;
+        }
+        else{
+            cout << "Are you sure you'd like to " << turnOptions.at(spaceChoice-1) << "? (y/n)\n" << endl;
+            cin >> proceed;
+            cout << endl;
+            if(spaceChoice == 2 && mainMap.isExplored(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+                cout << "This space has been explored, please pick another option.\n" << endl;
+                proceed = 'n';
+            }
+        }
+    }
+    switch (spaceChoice){
+        case 1:{// move
+            move(mainMap, mainParty);
+            break;
+        }
+        case 2:{// investigate 
+            mainParty.investigate();
+            mainMap.exploreSpace(mainMap.getPlayerRow(),mainMap.getPlayerCol());
+            break;
+        }
+        case 3:{// pick a fight
+            break;
+        }
+        case 4:{// cook and eat
+            //mainParty.cookAndEat();
+            break;
+        }
+        case 5:{// give up
+            //mainParty.loseGame(0);
+            break;
+        }
+    }
+}
+
+void roomSpace(){
+
+}
+
+void npcSpace(){
+
+}
+
+
+
 void phase2(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
     statusUpdate(mainParty,gameSorcerer);
     mainMap.displayMap();
-    /*
-    if(mainMap.isFreeSpace() == true){
-
+    cout << endl;
+    if(mainMap.isRoomLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+        roomSpace();
     }
-    else if(mainMap.isNPCLocation() == true){
-
+    else if(mainMap.isNPCLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+        npcSpace();
     }
-
+    else if(mainMap.isDungeonExit(mainMap.getPlayerRow(),mainMap.getPlayerCol())){
+        cout << "exit\n" << endl;
+    }
+    else{
+        normalSpace(mainMap, mainParty);
+    }
     gameSorcerer.increaseAnger();
-    */
 }
 
 int main(){
-    party mainParty;
+    /*party mainParty;
     // creates map
     Map mainMap;
     srand(time(NULL));
@@ -123,10 +272,22 @@ int main(){
     }
     Sorcerer gameSorcerer("Sorcerer", 6);
     phase1(mainParty);
-    /*while(s.getAnger() != 100 || giveUp || dies){
+    char leave = 'n';
+    while(leave == 'n'){
         phase2(gameSorcerer, mainMap, mainParty);
-    }*/
-    phase2(gameSorcerer, mainMap, mainParty);
+        cout << "leave\n" << endl;
+        cin >> leave;
+        cout << endl;
+    }
+    while(s.getAnger() != 100 || giveUp || dies (loseGame(different types))){
+        phase2(gameSorcerer, mainMap, mainParty);
+    }
+    for(int i = 0; i < 3; i++){
+        phase2(gameSorcerer, mainMap, mainParty);
+    }
+    */
+    RNG random;
+    cout << random.randIntOnRange(1,3) << endl;
     return 0;
 }
 
@@ -137,10 +298,9 @@ You will see other vendors out there and while we all cary similar good, are pri
 will print thank you even if cancelled could make bool or leave it
 clean up responses and add parts that use type in response
 
-phase 1 does not modify anything, even when adding the &
-erro is either in what is being counted or in what is being returned 
-works for int x but not printing the values
-phase 1 does not moddify the party's gold for the new value
+check for starvation/ too few members in the status update
+check anger for each phase 2
 
-we know phase 1 is modifiying the party members and can modify things even if the change is from the merchant menu
+
+could be good to make weapons an array rather than vector, or sort
 */
