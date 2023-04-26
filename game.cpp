@@ -634,7 +634,7 @@ bool readInMonsters(vector<Monster> &monsters, string filename)
 }
 
 // Party fights the mosnter
-bool fightMonster(vector<Monster> &monsters, party &mainParty)
+bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
 {
     if (monsters.size() == 0) // No monsters left to fight
     {
@@ -677,12 +677,54 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty)
 
     a = mainParty.partyInventory_.armorAvalible();
 
-    // Randomly Choose a Monster
-    int randomMonster = randomGenerator.randIntOnRange(0, monsters.size() - 1);
-    Monster monsterToFight = monsters.at(randomMonster);
+    // Find the level needed for the monster
+    int monsterLevelNeeded = 0;
+    if (isInRoom)
+    {
+        monsterLevelNeeded = mainParty.getRoomsCleared() + 2;
+        if (monsterLevelNeeded > 5)
+        {
+            monsterLevelNeeded = 5;
+        }
+    }
+    else
+    {
+        monsterLevelNeeded = mainParty.getRoomsCleared();
+        if (monsterLevelNeeded > 5) 
+        {
+            monsterLevelNeeded = 5;
+        }
+    } 
+
+    // Get all monsters of the correct level
+    vector<Monster> monstersToFight;
+
+    for (int j=0; j<monsters.size(); j++)
+    {
+        if (monsters.at(j).getLevel() == monsterLevelNeeded)
+        {
+            monstersToFight.push_back(monsters.at(i));
+        }
+    }
+    // No monsters of correct level left
+    if (monstersToFight.size() == 0)
+    {
+        cout << "You've killed all the monsters that you can fight right now." << endl;
+        return true;
+    }
+    // Randomly pic one of the monsters
+    int randomMonster = randomGenerator.randIntOnRange(0, monstersToFight.size() - 1);
+    Monster monsterToFight = monstersToFight.at(randomMonster);
     
-    // Remove the monster from the array so we don't see it again
-    monsters.erase(monsters.begin() + randomMonster);
+    // Remove the monster from the array original so we don't see it again
+    for (int j=0; j<monsters.size(); j++)
+    {
+        if (monsters.at(j).getLevel() == monsterToFight.getLevel() && monsters.at(j).getName() == monsterToFight.getName())
+        {
+            monsters.erase(monsters.begin() + j);
+            break;
+        }
+    }
 
     c = monsterToFight.getLevel();
     
@@ -691,7 +733,8 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty)
     cout << '\n' << "You have chosen to fight " << monsterToFight.getName() << ". Prepare for battle!" << endl;
     cout << "(Press enter to see who wins!)" << endl;
     // Wait for the user to hit enter (for suspense)
-    cin.ignore();
+    char trashVar;
+    cin >> trashVar;
 
     // Wins battle
     if (outcomeOfBattle > 0)
@@ -732,7 +775,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty)
 
 
 // Party must win and complete a puzzle!
-bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer)
+bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &monsters)
 {
 
     bool correctAns[2] = {false,false};
@@ -806,9 +849,14 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer)
             }
         }
 
-    }
+    } 
     if (correctAns[1] && correctAns[0])
     {
+        // Remove all monsters
+        while(monsters.size() > 0)
+        {
+            monsters.pop_back();
+        }
         cout << "You have defeated me in a battle of wits! My dungeon is now yours." << endl;
         return true;
     }
