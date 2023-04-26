@@ -224,6 +224,15 @@ bool inventory::removeWeapon(int weaponToRemove)
     else return false;
 }
 
+bool inventory::removeCookware(int cookwareToRemove)
+{
+   if (cookwares_.size() > cookwareToRemove)
+    {
+        cookwares_.erase(cookwares_.begin() + cookwareToRemove);
+        return true;
+    }
+    else return false; 
+}
 
 // Add armor to inventory
 void inventory::addArmor(int inputArmor){
