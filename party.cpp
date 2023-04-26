@@ -9,6 +9,52 @@
 #include "party.h"
 #include "item.h"
 #include "RNG.h"
+#include <fstream>
+
+
+bool createResultsFile(vector<player> players, bool didPartyWin, int roomsCleared, int goldRemaining, vector<treasure> treasuresRemaining, int spacesExplored, int monstersDefeated, int turnsElapsed)
+{
+    ofstream outFile; 
+    outFile.open("results.txt", ios::app);
+    if (!outFile.is_open()) return false;
+
+    if (didPartyWin)
+    {
+        outFile << "You won!\n";
+    }
+    else outFile << "You lost.\n";
+
+    for(int i=0; i<players.size(); i++)
+    {
+        if (players.at(i).isUserPlayer)
+        {
+            outFile << players.at(i).name << endl;
+            break;
+        }
+    }
+    cout << "The remaning players in your party are:\n";
+    for(int i=0; i<players.size(); i++)
+    {
+        if (!players.at(i).isUserPlayer)
+        {
+            outFile << players.at(i).name << endl;
+            break;
+        }
+    }
+    
+    outFile << "Rooms cleared: " << roomsCleared << endl;
+    outFile << "Gold remaining: " << goldRemaining << endl;
+    outFile << "Currently held treasure items: \n";
+    for (int i=0; i<treasuresRemaining.size();i++)
+    {
+        outFile << '\t' << treasuresRemaining.at(i).getType() << endl;
+    }
+    outFile << "Spaces explored: " << spacesExplored << endl;
+    outFile << "Monsters defeated: " << monstersDefeated << endl;
+    outFile << "Turns elapsed: " << turnsElapsed << endl;
+    return;
+
+}
 
 // Default constructor, sets all values to 0
 party::party()
@@ -168,16 +214,20 @@ void party::surrenderBattle()
 // !! TO DO !! Returns all starving players
 vector<player> party::starvingPlayers()
 {
-    player tempPlayer; // Code just for testing
-    tempPlayer.name = "TestPlayer";
+    
+    vector<player> starvingPlayers;
+    for (int i=0; i<players_.size(); i++)
+    {
+        if (players_.at(i).hunger < 5)
+        {
+            starvingPlayers.push_back(players_.at(i));
+        }
+    }
 
-    vector<player> testPlayerVector;
-    testPlayerVector.push_back(tempPlayer);
-
-    return testPlayerVector;
+    return starvingPlayers;
 }
 
- // !! TO DO !! Returns filled status:
+ // NO LONGER NEEDED Returns filled status:
  /*
  Number of rooms cleared 
  Keys found
@@ -255,10 +305,12 @@ void party::winGame()
     vector<treasure> treasuresGotten = partyInventory_.treasureAvailible();
     for (int i=0; i<treasuresGotten.size();i++)
     {
-        cout << treasuresGotten.at(i).getType() << endl;
+        cout << '\t' << treasuresGotten.at(i).getType() << endl;
     }
     cout << "Spaces explored: " << spacesExplored_ << endl;
     cout << "Monsters defeated: " << numMonstersDefeated_ << endl;
+    cout << "Turns elapsed: " << turnsElapsed_ << endl;
+    createResultsFile(players_, true, roomsCleared_, partyInventory_.goldAvalible(), partyInventory_.treasureAvailible(), spacesExplored_, numMonstersDefeated_, turnsElapsed_);
     return;
 }
 
@@ -310,10 +362,14 @@ void party::loseGame(int deathType)
     vector<treasure> treasuresGotten = partyInventory_.treasureAvailible();
     for (int i=0; i<treasuresGotten.size();i++)
     {
-        cout << treasuresGotten.at(i).getType() << endl;
+        cout << '\t' << treasuresGotten.at(i).getType() << endl;
     }
     cout << "Spaces explored: " << spacesExplored_ << endl;
     cout << "Monsters defeated: " << numMonstersDefeated_ << endl;
-    return;
+    cout << "Turns elapsed: " << turnsElapsed_ << endl;
+
+    createResultsFile(players_, false, roomsCleared_, partyInventory_.goldAvalible(), partyInventory_.treasureAvailible(), spacesExplored_, numMonstersDefeated_, turnsElapsed_);
+
     return;
 }
+
