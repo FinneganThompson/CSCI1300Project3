@@ -398,6 +398,17 @@ void merchantMenu(party &mainParty){
 }
 
 
+//Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
+/*
+robbed (chosen at random) 30%
+    lose ingredients (10kg)
+    cookware (1 item)
+    armor (1 item( break either weapon or armor 10% food poisoning one member loses 10 hunger points (can kill) 
+    30% locked in room: only happens if player tries to open door with key (nothing happens if picked when not open door) 
+    30% One random member that is not leader (can end game if no more members)
+*/
+
+
 /*
 Splits a string at a given seperator an puts it into an array
 */
@@ -676,7 +687,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty)
     c = monsterToFight.getLevel();
     
     // calculate the battle outcome
-    double outcomeOfBattle = ((r1*w)+d)-((r2*c)/a);
+    double outcomeOfBattle = ((r1*w)+d)-((r2*c)/(a+0.1));
     cout << '\n' << "You have chosen to fight " << monsterToFight.getName() << ". Prepare for battle!" << endl;
     cout << "(Press enter to see who wins!)" << endl;
     // Wait for the user to hit enter (for suspense)
@@ -805,7 +816,5 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer)
     
 
 }
-
-
 
 
