@@ -1,8 +1,13 @@
+
 #include "item.h"
 #include "Monster.h"
 #include "Sorcerer.h"
 #include "party.h"
-#include "Map.h"
+#include "RNG.h"
+#include <vector>
+#include <iostream>
+#include <fstream>
+
 
 /*
 Algorithm prints out everything that is in the party's inventory 
@@ -32,3 +37,26 @@ Enter the switch statement
 */
 
 void merchantMenu(party &mainParty);
+
+
+//Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
+/*
+robbed (chosen at random) 30%
+    lose ingredients (10kg)
+    cookware (1 item)
+    armor (1 item( break either weapon or armor 10% food poisoning one member loses 10 hunger points (can kill) 
+    30% locked in room: only happens if player tries to open door with key (nothing happens if picked when not open door) 
+    30% One random member that is not leader (can end game if no more members)
+*/
+
+// Randomly causes one of the end of turn misfortunes to the party
+bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithKey);
+
+// Reads in monsters to the provided vector from the file
+bool readInMonsters(vector<Monster> &monsters, string filename);
+
+// Complete fight sequence
+bool fightMonster(vector<Monster> &monsters, party &mainParty);
+
+// Complete sorcerer fight sequence 
+bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer); 
