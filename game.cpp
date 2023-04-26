@@ -703,7 +703,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
     {
         if (monsters.at(j).getLevel() == monsterLevelNeeded)
         {
-            monstersToFight.push_back(monsters.at(i));
+            monstersToFight.push_back(monsters.at(j));
         }
     }
     // No monsters of correct level left
