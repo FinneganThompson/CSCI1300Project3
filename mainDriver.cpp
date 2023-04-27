@@ -25,8 +25,9 @@ Display action menu (type depends on turn type)
 
 // to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp
 
+/**/
 
-void phase1(party &mainParty){
+void beforeEntry(party &mainParty){
     //print scoreboard
     // creates the player objects for the party
     player partyLeader, member1, member2, member3, member4;
@@ -59,24 +60,6 @@ void phase1(party &mainParty){
 }
 
 /*
-Algorithm prints out a status update, to be used at the start of every turn
-Accepts a party object and a sorcerer object
-Print out the number of rooms cleared, keys found, and the anger level of the sorcerer
-Print the inventory by calling the print inventory function
-Print out the fullness of the player and all party members
-*/
-
-void statusUpdate(party mainParty, Sorcerer gameSorcerer){
-    // prints out the rooms cleared, keys found, and sorcerer anger
-    cout << "+-------------+\n| STATUS      |\n+-------------+\n| Rooms Cleared: " << mainParty.getRoomsCleared() << " | Keys: " << mainParty.getKeysFound() << 
-    " | Anger Level: " << gameSorcerer.getAnger() << endl;
-    // calls print inventory to print the inventory
-    printInventory(mainParty.partyInventory_);
-    mainParty.printFullness();
-    // maybe add check here for starvation/ if too few members
-}
-
-/*
 for normal spaces:
 	move (20% chance fullness drops 1 point)
 	investigate (50% chance fullness drops 1 point unless fought monster) 
@@ -88,7 +71,7 @@ for normal spaces:
 	give up
 */
 
-void normalSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
+void normalSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gameOver, vector<Monster> &monsters){
     vector<string> turnOptions = {"Move to a different space","Investigate the space you are on","Pick a fight with a monster",
     "Cook and eat","Give up on your adventure"};
     int spaceChoice;
@@ -126,11 +109,15 @@ void normalSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
             break;
         }
         case 3:{
+            RNG random;
             cout << "Oh! You've chosen to try your luck with a monster.\n" << endl; 
-            vector<Monster> monsters;
-            readInMonsters(monsters, "monsters.txt");
-            fightMonster(monsters, mainParty);
-            // lose health 50%
+            fightMonster(monsters, mainParty, false);
+            if(random.doesActionOccur(50) == true){
+                for(int i = 0; i < mainParty.getPlayers().size(); i++){
+                    mainParty.removeHunger(i,1);
+                }
+                cout << "You all became tired from exploring, -1 hunger.\n" << endl;
+            }
             endOfTurnMisfortune(mainParty, 40, false); // 40%
             break;
         }
@@ -141,10 +128,12 @@ void normalSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
         }
         case 5:{// give up
             mainParty.loseGame(0);
+            gameOver = true;
             break;
         }
     }
 }
+
 /*
 for room spaces 
 	move
@@ -154,7 +143,7 @@ for room spaces
 	give up
     */
 
-void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
+void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gameOver, vector<Monster> monsters){
     vector<string> turnOptions = {"Move to a different space","Open the room door","Give up on your adventure"};
     int spaceChoice;
     char proceed = 'n';
@@ -181,39 +170,46 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
             break;
         }
         case 2:{//open door
+            //if(mainParty.getRoomsCleared() < 5){}
+            RNG random;
             if(mainParty.getKeysFound() > 0){ // get into room with key
                 cout << "You got in the room using a key, inside you see a monster.\n" << endl; 
-                vector<Monster> monsters;
-                readInMonsters(monsters, "monsters.txt");
                 // check if player wins the fight
-                if(fightMonster(monsters, mainParty) == true){ // win
+                if(fightMonster(monsters, mainParty, true) == true){ // win
                     endOfTurnMisfortune(mainParty, 60, true); // 60%
                 }
                 else{ // loss
                     mainParty.loseKey(); 
                     endOfTurnMisfortune(mainParty, 40, true); // 40%
                 }
-                    // lose health
+                if(random.doesActionOccur(50) == true){
+                    for(int i = 0; i < mainParty.getPlayers().size(); i++){
+                        mainParty.removeHunger(i,1);
+                    }
+                    cout << "You all became tired from exploring, -1 hunger.\n" << endl;
+                }
             }
             else{ // no key
                 //check if player wins boulder, parchment, sheers 
                 if(doorPuzzle() == true){ // win
                     cout << "Dispite not having a key, you got in the room. Inside you see a monster.\n" << endl; 
-                    vector<Monster> monsters;
-                    readInMonsters(monsters, "monsters.txt");
-                    fightMonster(monsters, mainParty);
+                    fightMonster(monsters, mainParty, false);
                     // check if player wins the fight
-                    if(fightMonster(monsters, mainParty) == true){ // win
+                    if(fightMonster(monsters, mainParty, false) == true){ // win
                         endOfTurnMisfortune(mainParty, 40, false); // 40%
                     }
                     else{ // loss
                         mainParty.loseKey();
                         endOfTurnMisfortune(mainParty, 40, false); // 40%
                     }
-                    // lose health
+                    if(random.doesActionOccur(50) == true){
+                        for(int i = 0; i < mainParty.getPlayers().size(); i++){
+                            mainParty.removeHunger(i,1);
+                        }
+                        cout << "You all became tired from exploring, -1 hunger.\n" << endl;
+                    }
                 }
                 else{ // loss
-                    RNG random;
                     // maybe make check to make sure that they are not the user
                     string playerName = mainParty.getPlayers().at(random.randIntOnRange(1,mainParty.getPlayers().size()-1)).name;
                     mainParty.killPlayerNoMessage(playerName);
@@ -226,10 +222,12 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
         }
         case 3:{//give up
             mainParty.loseGame(0);
+            gameOver = true;
             break;
         }
     }
 }
+
 /*
 for npc spaces
 	move
@@ -240,7 +238,7 @@ for npc spaces
 	give up
 */
 
-void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
+void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gameOver, vector<Monster> &monsters){
     vector<string> turnOptions = {"Move to a different space","Speak to the NPC","Give up on your adventure"};
     int spaceChoice;
     char proceed = 'n';
@@ -273,11 +271,15 @@ void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
                 merchantMenu(mainParty);
             }
             else if(NPCPuzzle() == false){
+                RNG random;
                 cout << "Not too clever I see. Say hello to my friend. HAHAHA!\n" << endl;
-                vector<Monster> monsters;
-                readInMonsters(monsters, "monsters.txt");
-                fightMonster(monsters, mainParty);
-                // lose health  
+                fightMonster(monsters, mainParty, false);
+                if(random.doesActionOccur(50) == true){
+                    for(int i = 0; i < mainParty.getPlayers().size(); i++){
+                        mainParty.removeHunger(i,1);
+                    }
+                    cout << "You all became tired from exploring, -1 hunger.\n" << endl;
+                }  
             }
             else{
                 cout << "You may not have completed my riddle but since I couldn't find them, I shall still offer my services.\n" << endl;
@@ -289,87 +291,89 @@ void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
         }
         case 3:{//give up
             mainParty.loseGame(0);
+            gameOver = true;
             break;
         }
     }
 }
 
+/**/
 
+void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
+    vector<Monster> monsters;
+    readInMonsters(monsters, "monsters.txt");
+    bool gameOver = false;
+    while(!mainMap.isDungeonExit(mainMap.getPlayerRow(),mainMap.getPlayerCol()) && gameOver == false){
+        vector<player> starvingPlayers = mainParty.starvingPlayers();
+        if(starvingPlayers.size() > 0){
+            cout << "It may be a good idea to cook soon, your party has some players that are on the brink of starving:\n" << endl;
+            for(int i = 0; i < starvingPlayers.size(); i++){
+                cout << "\t" << starvingPlayers.at(i).name << endl;
+            }
+            cout << endl;
+        }
+        statusUpdate(mainParty,gameSorcerer);
+        mainMap.displayMap();
+        cout << endl;
+        if(mainMap.isRoomLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+            cout << "room\n" << endl;
+            roomSpace(mainMap, mainParty, gameSorcerer, gameOver, monsters);
+        }
+        else if(mainMap.isNPCLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+            cout << "npc\n" << endl;
+            npcSpace(mainMap, mainParty, gameSorcerer, gameOver, monsters);
+        }else{
+            normalSpace(mainMap, mainParty, gameSorcerer,gameOver, monsters);
+        }
+        mainParty.incrementTurn();
+        if(mainParty.getPlayers().size() < 2){
+            mainParty.loseGame(1);
+            break;
+        }
+        else if(gameSorcerer.getAnger() == 100){
+            mainParty.loseGame(3);
+            break;
+        }
+    }
 
-void phase2(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
-    statusUpdate(mainParty,gameSorcerer);
-    mainMap.displayMap();
-    cout << endl;
-    if(mainMap.isRoomLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
-        cout << "room\n" << endl;
-        roomSpace(mainMap, mainParty, gameSorcerer);
-    }
-    else if(mainMap.isNPCLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
-        cout << "npc\n" << endl;
-        npcSpace(mainMap, mainParty, gameSorcerer);
-    }
-    else if(mainMap.isDungeonExit(mainMap.getPlayerRow(),mainMap.getPlayerCol())){
-        cout << "exit\n" << endl;
-    }
-    else{
-        normalSpace(mainMap, mainParty, gameSorcerer);
-    }
 }
 
 int main(){
+    // creates party
     party mainParty;
+    // creates sorcerer
+    Sorcerer gameSorcerer("Sorcerer", 6);
     // creates map
     Map mainMap;
-    srand(time(NULL));
-    int xNPC, yNPC;
+    // sets the location for all the rooms and NPCs
     for(int i = 0; i < 6; i++){
-    int xRoom = rand() % 12, yRoom = rand() % 12;
-    mainMap.addRoom(xRoom,yRoom);
-    xNPC = rand() % 12, yNPC = rand() % 12;
-    mainMap.addNPC(xNPC,yNPC);
+        srand(time(NULL));
+        int xRoom = rand() % 12, yRoom = rand() % 12;
+        mainMap.addRoom(xRoom,yRoom);
+        int xNPC = rand() % 12, yNPC = rand() % 12;
+        mainMap.addNPC(xNPC,yNPC);
     }
-    Sorcerer gameSorcerer("Sorcerer", 6);
-    phase1(mainParty);
-    char leave = 'n';
-    while(leave == 'n'){
-        phase2(gameSorcerer, mainMap, mainParty);
-        cout << "leave\n" << endl;
-        cin >> leave;
-        cout << endl;
-    }
-    /*
-    while(s.getAnger() != 100 || giveUp || dies (loseGame(different types))){
-        phase2(gameSorcerer, mainMap, mainParty);
-    }
-    for(int i = 0; i < 3; i++){
-        phase2(gameSorcerer, mainMap, mainParty);
-    }*/
+    beforeEntry(mainParty);
+    inDungeon(gameSorcerer, mainMap, mainParty);
     return 0;
 }
 
 /*
-could make invalid input outputs more fun
-"Welcome to the store, since it's your first time in let me give you some important information...
-You will see other vendors out there and while we all cary similar good, are prices may not be so similar."
-will print thank you even if cancelled could make bool or leave it
-clean up responses and add parts that use type in response
+sort out after sorcer is defeated, no more anger increase, no more monsters
 
-check for starvation/ too few members in the status update
-check anger for each phase 2
+is there a limit on weapons 
+
+fight sorcerer is not called
 
 
-could be good to make weapons an array rather than vector, or sort
+sometimes "nothing turned up" doesn't print from investigation
+why is The remaning players in your party are: printing twice
 
-
-sometimes "nothing turned up" doesn't print from investigation 
-for end game, only prints first party member and leader
-also prints out the treasure but not quantity so it looks like they have all that treasure
-spaces explored is not tracking
-
+i have only written for if they choose to leave, if they have too few players, or if the sorcerer's anger gets to 100
 
 score = numPlayersLeft*100 (include player if they do not die) + roomsCleared*200 + treasure(each iteam * cost for each*10) + spacesExplored*2 + 
-monstersDefeated (should we use level)*40 (exclude sorcerer) + didDefeatSorcerer
-score = 500 + 1000 + __ + 288 + __ + 1000
+monstersDefeated (should we use level)*40 (exclude sorcerer) + didDefeatSorcerer - (turns elapsed) - sorcerer anger
+score = 500 + 1000 + __ + 288 + __ + 1000 - __ - 100
 print monsters defeated
     level 1: 
     level 2:
