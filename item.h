@@ -47,11 +47,14 @@ class cookware
         string type_; // P: pot; F: frying pan; C: Cauldron
         int cost_; // Will be set by constructor
         int breakProb_;
+        int quantity_;
     public:
         cookware(int inputIntType); // Validates type and sets price based on type
         string getType(); // Returns cookware type
         int getCost(); // Returns cookware cost
         int getBreakProb(); // returns probability of cookware breaking
+        int getQuantity(); // returns the amount of that type of cookware 
+        void setQuantity(int inputQuantity); // sets the quantity
 };
 
 class treasure{
@@ -93,10 +96,12 @@ class inventory{
         void addArmor(int inputArmor); // Add armor to inventory
         bool removeWeapon(int weaponToRemove); // Removes weapon
         bool removeArmor(int armorToRemove); // Removes armor. Returns success
-        void addCookware(cookware cookwareToAdd); // Add cookware to inventory
+        void addCookware(int type, int quantity); // Add cookware to inventory
         bool removeCookware(int cookwareToRemove); // Removes cookware. Returns success
-        bool useCookware(vector<cookware> cookwares_, int vectPos); // Returns false is cookware breaks and removes from vector
+        bool useCookware(int type); // Returns false is cookware breaks and removes from vector
         void changeTreasureQuantity(int type, int quantChange); // changes the amount of that type of treasure
+        void changeCookwareQuantity(int type, int quantChange); // changes the amount of that type of cookware
+        int totalCookware(); // returns how much cookware the party has
 
 
         bool useCookware(char type, int kgIngredientsUsed); // If cookware of a given type is avaible, see if using it results in sucess. Uses up ingredients
