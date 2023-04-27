@@ -9,52 +9,8 @@
 #include "party.h"
 #include "item.h"
 #include "RNG.h"
-#include <fstream>
-
-
-bool createResultsFile(vector<player> players, bool didPartyWin, int roomsCleared, int goldRemaining, vector<treasure> treasuresRemaining, int spacesExplored, int monstersDefeated, int turnsElapsed)
-{
-    ofstream outFile; 
-    outFile.open("results.txt", ios::app);
-    if (!outFile.is_open()) return false;
-
-    if (didPartyWin)
-    {
-        outFile << "You won!\n";
-    }
-    else outFile << "You lost.\n";
-
-    for(int i=0; i<players.size(); i++)
-    {
-        if (players.at(i).isUserPlayer)
-        {
-            outFile << players.at(i).name << endl;
-            break;
-        }
-    }
-    cout << "The remaning players in your party are:\n";
-    for(int i=0; i<players.size(); i++)
-    {
-        if (!players.at(i).isUserPlayer)
-        {
-            outFile << players.at(i).name << endl;
-            break;
-        }
-    }
-    
-    outFile << "Rooms cleared: " << roomsCleared << endl;
-    outFile << "Gold remaining: " << goldRemaining << endl;
-    outFile << "Currently held treasure items: \n";
-    for (int i=0; i<treasuresRemaining.size();i++)
-    {
-        outFile << '\t' << treasuresRemaining.at(i).getType() << endl;
-    }
-    outFile << "Spaces explored: " << spacesExplored << endl;
-    outFile << "Monsters defeated: " << monstersDefeated << endl;
-    outFile << "Turns elapsed: " << turnsElapsed << endl;
-    return;
-
-}
+#include "game.h"
+#include <iostream>
 
 // Default constructor, sets all values to 0
 party::party()
@@ -75,6 +31,7 @@ int party::getNumMonstersDefeated() {return numMonstersDefeated_;}
 void party::increaseRoomsCleared() {roomsCleared_++; return;} // Inc. by 1
 void party::increaseSpacesExplored() {spacesExplored_++; return;} // Inc. by 1
 void party::increaseKeysFound() {keysFound_++; return;} // Inc. by 1
+void party::loseKey() {keysFound_--; return;} // Decr by 1 
 void party::incrementTurn() {turnsElapsed_++; return;} // Inc by 1
 
 void party::addPlayer(player playerToAdd)
@@ -93,13 +50,92 @@ vector<player> party::getPlayers()
 // 10% key; 20% treasure; 10% monster; no matter outcome 50% individual hunger drop chance
 void party::investigate()
 {
+    RNG random;
+    bool healthDrop = false;
+    int investigationResult = random.randIntBetweenOneAndTen();
+    if(investigationResult == 1){
+        increaseKeysFound();
+        cout << "What luck, you found a key!\n" << endl;
+    }
+    else if(investigationResult == 2 || investigationResult == 3){
+        if(getRoomsCleared() > 0){
+            partyInventory_.changeTreasureQuantity(getRoomsCleared()-1,1);
+            cout << "Something shiny... You found a " << partyInventory_.treasureAvailible().at(getRoomsCleared()-1).getType() << "!\n" << endl;
+        }
+    }
+    else if(investigationResult == 4 || investigationResult == 5){
+        cout << "Uh-oh, you have encountered a monster!\n" << endl;
+        vector<Monster> monsters;
+        readInMonsters(monsters, "monsters.txt");
+        //fightMonster(monsters, mainParty);
+        // lose health 50%
+    }
+    else{
+        cout << "Looks like nothing turned up.\n" << endl;
+    }
+    if(healthDrop == false){
+        if(random.doesActionOccur(50) == true){
+            for(int i = 0; i < getPlayers().size(); i++){
+                removeHunger(i,1);
+            }
+            cout << "You all became tired from exploring, -1 hunger.\n" << endl;
+        }
+    }
+    increaseSpacesExplored();
     return;
 }
 
 // !!TO DO!! Prompts player for kg to cook and type of cookware. Determines sucess of cooking, and will add to hunger pts as appropriate
-void party::cookAndEat()
-{
-    return;
+void party::cookAndEat(){
+    cout << "In order to cook a meal, you must have at least 5kg of ingredients and can only cook in 5kg increments." << endl <<
+    "For each 5kg of ingredients cooked, your whole party will gain back 1 fullness point. However no one can exceed 50 fullness points.\n" << endl;
+    if(partyInventory_.totalIngredientsAvliable() < 5){
+        cout << "Unfortunately it looks like you don't have enough ingredients for a meal, better hope you find a merchant!\n"<< endl;
+    }
+    else if(partyInventory_.totalCookware() == 0){
+        cout << "Looks like you have no cookware to cook with, perhaps go see a merchant.\n" << endl;
+    }
+    else{
+        RNG random;
+        int quantity = partyInventory_.totalIngredientsAvliable() + 1, type = 0;
+        bool hasType = false;
+        while(quantity > partyInventory_.totalIngredientsAvliable()){
+            cout << "How much would you like to cook?\n" << endl;
+            cin >> quantity;
+            cout << endl;
+            if(quantity > partyInventory_.totalIngredientsAvliable() || quantity < 5){
+                cout << "You can't make that, try a differnt amount and remember it has to be an increment of 5!\n" << endl;
+            }
+            else{
+                while(hasType == false){
+                    cout << "What would you like to cook with?\n1. Ceramic pot.\n2. Frying pan.\n3. Cauldron.\n" << endl;
+                    cin >> type;
+                    cout << endl;
+                    if(partyInventory_.cookwareAvailible().at(type-1).getQuantity() == 0){
+                        cout << "Unfortunately you don't have any of those to cook with. See if you have something else to use.\n" << endl;
+                    }
+                    else{
+                        hasType = true;
+                    }
+                }
+                if(partyInventory_.useCookware(type-1) == true){
+                    cout << "Your food was made successfully! You have all gained: " << (quantity / 5) << " fullness points!\n" << endl;
+                    for(int i = 0; i < getPlayers().size(); i++){
+                        addHunger(i,(quantity / 5));
+                    }
+                    partyInventory_.addIngredients(-quantity);
+                }
+                else{
+                    cout << "Oh no! Your " << partyInventory_.cookwareAvailible().at(type-1).getType() << " broke. " << 
+                    "You were unable to cook a meal and no longer have your " << partyInventory_.cookwareAvailible().at(type-1).getType() <<
+                    ".\n" << endl;
+                    partyInventory_.removeCookware(type-1);
+                }
+                printFullness();
+                cout << "You have " << partyInventory_.totalIngredientsAvliable() << "kg of ingredients left.\n" << endl;
+            }
+        }
+    }
 }
 
 // Removes hunger from player at player position. Returns false if removing that much would kill anyone
@@ -113,6 +149,16 @@ bool party::removeHunger(int playerPosition, int hungerToRemove)
     {
         players_.at(playerPosition).hunger -= hungerToRemove;
         return true;
+    }
+}
+
+// Adds hunger points
+void party::addHunger(int playerPosition, int hungerToAdd){
+    if((hungerToAdd + players_.at(playerPosition).hunger) > 50){
+        players_.at(playerPosition).hunger = 50;
+    }
+    else{
+        players_.at(playerPosition).hunger += hungerToAdd;
     }
 }
 
@@ -170,7 +216,7 @@ void party::loseBattle()
     // Remove the ingredients 
     partyInventory_.addIngredients(-ingredientsToLose);
 
-    cout << "You have lost the battle. You lost" << goldToLose << "gold, and " << ingredientsToLose << " ingredients." << endl;
+    cout << "You have lost the battle. You lost " << goldToLose << " gold, and " << ingredientsToLose << " ingredients." << endl;
 
   // 50% chance for each player to lose one hunger
   for (int i=0; i<players_.size(); i++)
@@ -184,8 +230,7 @@ void party::loseBattle()
 }
 
 // !! TO DO !! Party loses one non-main member and their items as appropiate. 50% food drop by 1. 
-void party::surrenderBattle()
-{
+void party::surrenderBattle(){
     RNG randomGenerator;
     cout << "You have chosen to surrender this battle." << endl;
     int playerToKill = 0;
@@ -207,27 +252,22 @@ void party::surrenderBattle()
             else killPlayerOfHunger(players_.at(i).name);
         }
     }
-
     return;
 }
 
 // !! TO DO !! Returns all starving players
 vector<player> party::starvingPlayers()
 {
-    
-    vector<player> starvingPlayers;
-    for (int i=0; i<players_.size(); i++)
-    {
-        if (players_.at(i).hunger < 5)
-        {
-            starvingPlayers.push_back(players_.at(i));
-        }
-    }
+    player tempPlayer; // Code just for testing
+    tempPlayer.name = "TestPlayer";
 
-    return starvingPlayers;
+    vector<player> testPlayerVector;
+    testPlayerVector.push_back(tempPlayer);
+
+    return testPlayerVector;
 }
 
- // NO LONGER NEEDED Returns filled status:
+ // !! TO DO !! Returns filled status:
  /*
  Number of rooms cleared 
  Keys found
@@ -244,11 +284,9 @@ Sorcerer’s anger
  // !! TO DO !! Returns all of the contributors to the sucess of an attack that are parts of the party class.
 // partyDependentAttackContributors getPartyDependentAttackContributors()
 
-
 // Removes a player and thier items as appropriate
-void party::killPlayerNoMessage(string name)
-{
-    partyInventory_.removeArmor(1);
+void party::killPlayerNoMessage(string name){
+     partyInventory_.removeArmor(1);
     partyInventory_.removeWeapon(0);
     for(int i=0; i<players_.size(); i++) // Loop through all players
     {
@@ -261,9 +299,8 @@ void party::killPlayerNoMessage(string name)
     return;
 }
 
-// Removes player + items and prints hunger death message
-void party::killPlayerOfHunger(string name)
-{
+// !! TO DO !! Removes player + items and prints hunger death message
+void party::killPlayerOfHunger(string name){
     cout << name <<" has died of hunger. Your party grows smaller..." << endl;
     killPlayerNoMessage(name);
     return;
@@ -278,8 +315,7 @@ void party::killPlayerOfHunger(string name)
     number of spaces explored
     number of monsters defeated
 */
-void party::winGame()
-{
+void party::winGame(){
     cout << "You have won the game!\n" << "Your party leader is: \n";
     for(int i=0; i<players_.size(); i++)
     {
@@ -298,25 +334,22 @@ void party::winGame()
             break;
         }
     }
-    
+
     cout << "Rooms cleared: " << roomsCleared_ << endl;
     cout << "Gold remaining: " << partyInventory_.goldAvalible() << endl;
     cout << "Currently held treasure items: \n";
     vector<treasure> treasuresGotten = partyInventory_.treasureAvailible();
     for (int i=0; i<treasuresGotten.size();i++)
     {
-        cout << '\t' << treasuresGotten.at(i).getType() << endl;
+        cout << treasuresGotten.at(i).getType() << endl;
     }
     cout << "Spaces explored: " << spacesExplored_ << endl;
     cout << "Monsters defeated: " << numMonstersDefeated_ << endl;
-    cout << "Turns elapsed: " << turnsElapsed_ << endl;
-    createResultsFile(players_, true, roomsCleared_, partyInventory_.goldAvalible(), partyInventory_.treasureAvailible(), spacesExplored_, numMonstersDefeated_, turnsElapsed_);
     return;
 }
 
 // Game is lost. Print same info as win. Type 0:Give up; 1: all but main player die; 2: main player dies; 3: Sorcerer's anger; 4: sorcerer kills them.
-void party::loseGame(int deathType)
-{   
+void party::loseGame(int deathType){   
     // Reasons why the player lost
     switch(deathType)
     {
@@ -349,27 +382,39 @@ void party::loseGame(int deathType)
     cout << "The remaning players in your party are:\n";
     for(int i=0; i<players_.size(); i++)
     {
+        //check why
+        // could make i start at 1 but potentially run into error if game ends from too few players
         if (!players_.at(i).isUserPlayer)
         {
             cout << players_.at(i).name << endl;
             break;
         }
     }
-    
+
     cout << "Rooms cleared: " << roomsCleared_ << endl;
     cout << "Gold remaining: " << partyInventory_.goldAvalible() << endl;
     cout << "Currently held treasure items: \n";
     vector<treasure> treasuresGotten = partyInventory_.treasureAvailible();
     for (int i=0; i<treasuresGotten.size();i++)
     {
-        cout << '\t' << treasuresGotten.at(i).getType() << endl;
+        cout << "\t" << treasuresGotten.at(i).getType() << ": " << treasuresGotten.at(i).getQuantity() << endl;
     }
     cout << "Spaces explored: " << spacesExplored_ << endl;
     cout << "Monsters defeated: " << numMonstersDefeated_ << endl;
-    cout << "Turns elapsed: " << turnsElapsed_ << endl;
-
-    createResultsFile(players_, false, roomsCleared_, partyInventory_.goldAvalible(), partyInventory_.treasureAvailible(), spacesExplored_, numMonstersDefeated_, turnsElapsed_);
-
     return;
 }
 
+/*
+Algorithm prints the fullness points of each player in the party
+Accepts a party object
+Loop through the party and print the fullness points for each member
+*/
+
+void party::printFullness(){
+    cout << "+-------------+\n| PARTY       |\n+-------------+" << endl;
+    // loop through all the party members and print out their fullness
+    for(int i = 0; i < players_.size(); i++){
+        cout << "| " << players_.at(i).name << " | Fullness: " << players_.at(i).hunger << endl;
+    }
+    cout << "+-------------+\n" << endl;
+}
