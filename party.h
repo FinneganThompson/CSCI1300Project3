@@ -16,7 +16,7 @@ struct player{
 
     string name;
     int hunger;
-    bool isUserPlayer; // Is the one controlling the game (leader)
+    bool isUserPlayer = false; // Is the one controlling the game (leader)
 
 };
 
@@ -61,15 +61,15 @@ class party{
         void increaseRoomsCleared(); // Inc. by 1
         void increaseSpacesExplored(); // Inc. by 1
         void increaseKeysFound(); // Inc. by 1
+        void loseKey(); // Decr by 1
         void incrementTurn(); // Inc by 1
 
         void addPlayer(player playerToAdd);
         vector<player> getPlayers(); 
 
-        void investigate(); // 10% key; 20% treasure; 10% monster; no matter outcome 50% individual hunger drop chance
-
         void cookAndEat(); // Prompts for kg ingredients and cookware. Hunger increases are dist. equally
         bool removeHunger(int playerPosition, int hungerToRemove); // Removes hunger from the player at position playerPosition in the players_ vector. Returns false if removing that much hunger would kill the player. 
+        void addHunger(int playerPosition, int hungerToAdd); // Adds hunger points
 
         void winBattle(string monsterName); // iterates num monsters defeated by 1 adds to monsters defeated. 50% chance for each player to lose one hunger
         void loseBattle(); // Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. Prints death message. 50% food drop by 1. 
@@ -85,6 +85,8 @@ class party{
 
         void winGame(); // Game is won
         void loseGame(int deathType); // Type 0:Give up; 1: all but main player die; 2: main player dies; 3: Sorcerer's anger
+        
+        void printFullness(); //prints the fullness points of each player in the party
 
 
 };
