@@ -4,28 +4,13 @@
 /*
 Algorithm prints out everything that is in the party's inventory 
 Accepts the party's inventory object 
-Create vectors for the cookware, weapons, and treasure, of their respective types
-Create ints to hold the amount of each type of cookware, weapons, and treasure respectively 
-Loop through each vector and count the number of each type for cookware, weapons, and treasure respectively
+Create a vector for the weapons of it's respective types
+Create ints to hold the amount of each type of weapons 
+Loop through the vector and count the number of each type of weapons
+Print out the amount of gold, ingreidents, armor, and each type of weapons, cookware, and treasure
 */
 
 void printInventory(inventory partyInventory){
-    // creates a vector to hold the cookware in the party's inventory
-    vector<cookware> partyCookware = partyInventory.cookwareAvailible();
-    // creates ints to hold the number of each individual type of cookware
-    int pots = 0, fryingPans = 0, cauldrons = 0;
-    // loops through the vector to count the number of each type of cookware
-    for(int i = 0; i < partyCookware.size(); i++){
-        if(partyCookware.at(i).getType() == "Ceramic pot"){
-            pots++;
-        }
-        else if(partyCookware.at(i).getType() == "Frying pan"){
-            fryingPans++;
-        }
-        else{
-            cauldrons++;
-        }
-    }
     // creates a vector to hold the weapons in the party's inventory
     vector<weapon> partyWeapons = partyInventory.weaponsAvalible();
     // creates ints to hold the number of each individual type of weapon
@@ -48,38 +33,18 @@ void printInventory(inventory partyInventory){
             longSwords++;
         }
     }
-    // creates a vector to hold the treasure in the party's inventory
-    vector<treasure> partyTreasure = partyInventory.treasureAvailible();
-    // creates ints to hold the number of each individual type of treasure
-    int rings = 0, necklaces = 0, bracelets = 0, circlets = 0, goblets = 0;
-    // loops through the vector to count the number of each type of treasure
-    for(int i = 0; i < partyTreasure.size(); i++){
-        if(partyTreasure.at(i).getType() == "Silver ring"){
-            rings++;
-        }
-        else if(partyTreasure.at(i).getType() == "Ruby necklace"){
-            necklaces++;
-        }
-        else if(partyTreasure.at(i).getType() == "Emerald bracelet"){
-            bracelets++;
-        }
-        else if(partyTreasure.at(i).getType() == "Diamond circlet"){
-            circlets++;
-        }
-        else{
-            goblets++;
-        }
-    }
     // prints out the whole inventory, including the counts for each item in the inventory
     cout << "+-------------+\n| INVENTORY   |\n+-------------+" << endl <<
     "| Gold        | " << partyInventory.goldAvalible() << endl << 
     // edit so that we get weight 
     "| Ingredients | " << partyInventory.totalIngredientsAvliable() << " kg" << endl << 
-    "| Cookware    | P: " << pots << " | F: " << fryingPans << " | C: " << cauldrons << endl <<
+    "| Cookware    | P: " << partyInventory.cookwareAvailible().at(0).getQuantity() << " | F: " << partyInventory.cookwareAvailible().at(1).getQuantity() << 
+    " | C: " << partyInventory.cookwareAvailible().at(2).getQuantity() << endl <<
     "| Weapons     | C: " << clubs << " | S: " << spears << " | R: " << rapiers << " | B: " << batAxes << " | L: " << longSwords << endl <<
     "| Armor       | " << partyInventory.armorAvalible() << endl << 
-    "| Treasures   | R: " << partyTreasure.at(0).getQuantity() << " | N: " << partyTreasure.at(1).getQuantity() << " | B: " << partyTreasure.at(2).getQuantity() << 
-    " | C: " << partyTreasure.at(3).getQuantity() << " | G: " << partyTreasure.at(4).getQuantity() << endl;
+    "| Treasures   | R: " << partyInventory.treasureAvailible().at(0).getQuantity() << " | N: " << partyInventory.treasureAvailible().at(1).getQuantity() << 
+    " | B: " << partyInventory.treasureAvailible().at(2).getQuantity() << " | C: " << partyInventory.treasureAvailible().at(3).getQuantity() << 
+    " | G: " << partyInventory.treasureAvailible().at(4).getQuantity() << endl;
 }
 
 /*
@@ -199,7 +164,7 @@ void merchantMenu(party &mainParty){
                                     if(buy != 'n'){
                                         mainParty.partyInventory_.addGold(-cost);
                                         for(int i = 0; i < quantity; i++){
-                                            mainParty.partyInventory_.addCookware(cook);
+                                            mainParty.partyInventory_.changeCookwareQuantity(type-1,quantity);
                                         }
                                         //allows both loops to be exited
                                         type = 4;
@@ -365,7 +330,7 @@ void merchantMenu(party &mainParty){
                                     "(s)\n" << endl;
                                 }
                                 else if(quantity != 0){
-                                    cost = (quantity*treas.getPrice())+(quantity*treas.getPrice()*costChange);
+                                    cost = (quantity*treas.getPrice());
                                     cout << "You want to sell " << quantity << " " << treas.getType() << "(s) for " << cost << " Gold? (y/n)\n" << endl;
                                     // buy is used but really it is to sell
                                     cin >> buy;
@@ -398,64 +363,103 @@ void merchantMenu(party &mainParty){
 }
 
 
-//Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
 /*
-robbed (chosen at random) 30%
-    lose ingredients (10kg)
-    cookware (1 item)
-    armor (1 item( break either weapon or armor 10% food poisoning one member loses 10 hunger points (can kill) 
-    30% locked in room: only happens if player tries to open door with key (nothing happens if picked when not open door) 
-    30% One random member that is not leader (can end game if no more members)
+Algorithm prints out a status update, to be used at the start of every turn
+Accepts a party object and a sorcerer object
+Print out the number of rooms cleared, keys found, and the anger level of the sorcerer
+Print the inventory by calling the print inventory function
+Print out the fullness of the player and all party members
 */
 
-
-/*
-Splits a string at a given seperator an puts it into an array
-*/
-
-int split(string inputString, char seperator, string peiceArray[], int peiceArraySize)
-{   
-    int lastSeperatorLocation = 0;
-    int seperatorsFound = 0;
-
-    if (inputString.length() == 0) // Empty strings retunrn 0 by project spec
-    {
-        return 0;
-    }
-
-    for (int i = 0; i < inputString.length()+1; i++) //Iterate through all elements in the string
-    {
-        if (((inputString[i]  == seperator) && peiceArraySize > seperatorsFound) || i == inputString.length() ) // If we encounter the seperator and still have room in our array we will evaluate the following
-        {
-
-            peiceArray[seperatorsFound] = inputString.substr(lastSeperatorLocation,(i-lastSeperatorLocation)); // Setting the next avalible location in the array to the string before the found seperator
-            lastSeperatorLocation = i+1; // We do not include the seperator in our new array, so we set the location one higher than actual
-            seperatorsFound++;
-        }
-
-        else if (peiceArraySize <= seperatorsFound) // If the array is too small retunrn -1
-        {
-            return -1;
-        }
-    }
-
-    if (lastSeperatorLocation == 0) // If there are no seperators all the whole string goes into the array
-    {
-        peiceArray[0] = inputString;
-        return 1;
-    }
-    
-
-
-    return seperatorsFound;
-
+void statusUpdate(party mainParty, Sorcerer gameSorcerer){
+    // prints out the rooms cleared, keys found, and sorcerer anger
+    cout << "+-------------+\n| STATUS      |\n+-------------+\n| Rooms Cleared: " << mainParty.getRoomsCleared() << " | Keys: " << mainParty.getKeysFound() << 
+    " | Anger Level: " << gameSorcerer.getAnger() << endl;
+    // calls print inventory to print the inventory
+    printInventory(mainParty.partyInventory_);
+    mainParty.printFullness();
 }
 
 
-bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithKey)
+/*
+Algorithm accepts a map object and a party object
+Declare a RNG object, a char to hold the move directio choice, and a bool to hold if the party's move choice is allowed
+While the move is not allowed:
+Ask the user where they would like to go and print the options as well
+Accept the user input into the move choice
+Check if the move choice is allowed using the .move function (if it is by checking you will also be moving)
+If it is not allowed print out a message to inform the user
+After exiting the while loop (if the party moved) loop through the party and individually determine if that player loses a fullness point
+*/
+
+void move(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
+    RNG random;
+    char moveChoice;
+    bool okayMove = false;
+    // checks if the move was not allowed
+    while(okayMove == false){
+        cout << "Where would you like to go? (w to go up, s to go down, a to go left, and d to go right)\n" << endl;
+        cin >> moveChoice;
+        cout << endl;
+        // check if the move worked
+        if(mainMap.move(moveChoice) == true){ 
+            // if it did change the bool
+            okayMove = true;
+        }
+        else{
+            cout << "Ouch, looks like you've walked into a wall. Maybe try going a different direction or use lowercase input.\n" << endl;
+        }
+    }
+    // loop through party members and determine if that player loses a fullness point and if so remove a fullness point
+    for(int i = 0; i < mainParty.getPlayers().size(); i++){
+        if(random.doesActionOccur(20) == true){
+            // need to sort out what to do if it will kill
+            mainParty.removeHunger(i,1);
+        }
+    }
+    if(mainMap.isExplored(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == false){
+        gameSorcerer.increaseAnger();
+    }
+}
+
+
+
+void investigate(party &mainParty){
+    RNG random;
+    int investigationResult = random.randIntBetweenOneAndTen();
+    if(investigationResult == 1){
+        mainParty.increaseKeysFound();
+        cout << "What luck, you found a key!\n" << endl;
+    }
+    else if(investigationResult == 2 || investigationResult == 3){
+        if(mainParty.getRoomsCleared() > 0){
+            mainParty.partyInventory_.changeTreasureQuantity(mainParty.getRoomsCleared()-1,1);
+            cout << "Something shiny... You found a " << mainParty.partyInventory_.treasureAvailible().at(mainParty.getRoomsCleared()-1).getType() << 
+            "!\n" << endl;
+        }
+    }
+    else if(investigationResult == 4 || investigationResult == 5){
+        cout << "Uh-oh, you have encountered a monster!\n" << endl;
+        vector<Monster> monsters;
+        readInMonsters(monsters, "monsters.txt");
+        fightMonster(monsters, mainParty, false);
+    }
+    else{
+        cout << "Looks like nothing turned up.\n" << endl;
+    }
+    if(random.doesActionOccur(50) == true){
+        for(int i = 0; i < mainParty.getPlayers().size(); i++){
+            mainParty.removeHunger(i,1);
+        }
+        cout << "You all became tired from exploring, -1 hunger.\n" << endl;
+    }
+    mainParty.increaseSpacesExplored();
+}
+
+bool endOfTurnMisfortune(party &mainParty, int misfortuneProb, bool wasLastActionExitRoomOpenedWithKey)
 {
     RNG randomGenerator;
-    bool doesMisfortuneHappen = randomGenerator.doesActionOccur(40); // 40% chance of action ocurring
+    bool doesMisfortuneHappen = randomGenerator.doesActionOccur(misfortuneProb); // 40% chance of action ocurring
     if (!doesMisfortuneHappen) return false;    
 
     // Robbed misfortune
@@ -466,7 +470,6 @@ bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithK
         switch(robbedRandomInt)
         {
             case 0: // subtract 10 kg of ingredients, print robbed messauge
-
                 if (mainParty.partyInventory_.totalIngredientsAvliable() >= 10){ // Only if we have sufficient ingredients can we take any away
                     mainParty.partyInventory_.addIngredients(-10);
                     cout << "OH NO! Your team was robbed by dungeon bandits!" << '\n' << "You lost 10kg of ingredients." << endl;
@@ -482,26 +485,18 @@ bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithK
                 }
                 else return false; // If we don't have armor, there is no misfortune
             case 3: // lose 1 cookware
-                vector<cookware> cookwareVect = mainParty.partyInventory_.cookwareAvailible(); // Get our cookware
-                if (mainParty.partyInventory_.removeCookware(1) == true) // Remove one cookware if we can
-                {
-                    string cookwareTypeRemovedString = cookwareVect.at((cookwareVect.size() - 1)).getType(); // Get the type of the cookware we removed
-                    char cookwareTypeRemovedChar = cookwareTypeRemovedString[0];
-                    string cookwareType;
-                    switch(cookwareTypeRemovedChar) // Change our type char to a string
-                    {
-                        case 'P':
-                            cookwareType = "Pot";
-                            break;
-                        case 'F':
-                            cookwareType = "Frying Pan";
-                            break;
-                        case 'C':
-                            cookwareType = "Cauldron";
-                            break;
-
+                if(mainParty.partyInventory_.totalCookware() > 0){
+                    RNG random;
+                    bool removed = false;
+                    int randCookware = 0;
+                    while(removed == false){
+                        randCookware = random.randIntOnRange(1,3);
+                        if(mainParty.partyInventory_.removeCookware(randCookware) == true){
+                            removed = true;
+                        }
                     }
-                    cout << "OH NO! Your team was robbed by dungeon bandits!" << '\n' << "You lost 1 " << cookwareType << "." << endl;
+                    cout << "OH NO! Your team was robbed by dungeon bandits!" << '\n' << "You lost 1 " << 
+                    mainParty.partyInventory_.cookwareAvailible().at(randCookware).getType() << "." << endl;
                     return true;
                     break;
                 }
@@ -544,7 +539,7 @@ bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithK
                     return true;
                     break;
                 case 'R':
-                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " spear broke!" << endl;
+                    cout << "OH NO! Your +" << weaponToRemove.getMod() << " rapier broke!" << endl;
                     return true;
                     break;
                 case 'B':
@@ -619,7 +614,7 @@ bool readInMonsters(vector<Monster> &monsters, string filename)
         string tempLine;
         string tempArr[2]; 
         getline(monsterFile, tempLine);
-        
+
         int splitLineReturn = split(tempLine, ',', tempArr, 2); // Split each line into riddle and answer
 
         if (splitLineReturn == 2) 
@@ -715,7 +710,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
     // Randomly pic one of the monsters
     int randomMonster = randomGenerator.randIntOnRange(0, monstersToFight.size() - 1);
     Monster monsterToFight = monstersToFight.at(randomMonster);
-    
+
     // Remove the monster from the array original so we don't see it again
     for (int j=0; j<monsters.size(); j++)
     {
@@ -727,7 +722,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
     }
 
     c = monsterToFight.getLevel();
-    
+
     // calculate the battle outcome
     double outcomeOfBattle = ((r1*w)+d)-((r2*c)/(a+0.1));
     cout << '\n' << "You have chosen to fight " << monsterToFight.getName() << ". Prepare for battle!" << endl;
@@ -744,7 +739,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
         bool isKeyDropped = randomGenerator.doesActionOccur(10);
         mainParty.partyInventory_.addIngredients(ingredientsToCollect);
         mainParty.partyInventory_.addGold(goldToCollect);
-        
+
         if (isKeyDropped) // 10% of key being dropped
         {
             mainParty.increaseKeysFound();
@@ -770,7 +765,6 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
         return false;
     }
 
-
 }
 
 
@@ -779,7 +773,7 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
 {
 
     bool correctAns[2] = {false,false};
-    
+
     cout << "You have chosen to fight me, the Sorcerer... but I'm not just the Sorcerer, I'm " 
     << mainSorcerer.getName() << ", master of computer science!" << endl;
 
@@ -803,7 +797,7 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
         string tempLine;
         string tempArr[2]; 
         getline(questionFile, tempLine);
-        
+
         int splitLineReturn = split(tempLine, '~', tempArr, 2); // Split each line into riddle and answer
 
         if (splitLineReturn == 2) 
@@ -849,7 +843,7 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
             }
         }
 
-    } 
+    }
     if (correctAns[1] && correctAns[0])
     {
         // Remove all monsters
@@ -860,9 +854,4 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
         cout << "You have defeated me in a battle of wits! My dungeon is now yours." << endl;
         return true;
     }
-
-    
-
 }
-
-
