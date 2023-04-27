@@ -854,4 +854,5 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
         cout << "You have defeated me in a battle of wits! My dungeon is now yours." << endl;
         return true;
     }
+    return false;
 }
