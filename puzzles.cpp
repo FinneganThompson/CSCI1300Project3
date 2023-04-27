@@ -9,10 +9,8 @@
 #include "puzzles.h"
 
 
-/*
-Splits a string at a given seperator an puts it into an array
-*/
 
+//Splits a string at a given seperator an puts it into an array
 int split(string inputString, char seperator, string peiceArray[], int peiceArraySize)
 {   
     int lastSeperatorLocation = 0;
@@ -189,12 +187,4 @@ bool doorPuzzle()
     cout << "You challenged me and lost -- now pay the price!" << endl;
     return false;
 
-}
-
-
-int main()
-{
-    bool npc = doorPuzzle();
-    cout << npc; 
-    return 0;
 }
