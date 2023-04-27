@@ -17,7 +17,12 @@ using namespace std;
 #ifndef PUZZLE_H
 #define PUZZLE_H
 
-int NPCPuzzle(); // Prints out a random riddle, returns success or failure of player to solve puzzle. 0 = fail, 1 = sucess, -1 = no puzzles found
+
+// Splits a string at a given seperator an puts it into an array
+int split(string inputString, char seperator, string peiceArray[], int peiceArraySize);
+
+// Prints out a random riddle, returns success or failure of player to solve puzzle. 0 = fail, 1 = sucess, -1 = no puzzles found
+int NPCPuzzle(); 
 
 bool doorPuzzle(); // Give party the door puzzle, returns success or failure of player to solve puzze
 
