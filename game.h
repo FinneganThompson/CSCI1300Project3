@@ -1,13 +1,13 @@
-
 #include "item.h"
 #include "Monster.h"
 #include "Sorcerer.h"
 #include "party.h"
+#include "Map.h"
 #include "RNG.h"
+#include "puzzles.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
-
 
 /*
 Algorithm prints out everything that is in the party's inventory 
@@ -19,6 +19,15 @@ For treasure, after counting the amount of each type of treasure add it to the v
 */
 
 void printInventory(inventory partyInventory);
+
+/*
+Algorithm prints the fullness points of each player in the party
+Accepts a party object
+Declarea vector of the players
+Loop through the party and print the fullness points for each member
+*/
+
+void printFullness(party mainParty);
 
 /*
 Algorithm is an interactive menu to allow a user to buy or sell items 
@@ -38,6 +47,21 @@ Enter the switch statement
 
 void merchantMenu(party &mainParty);
 
+/*
+Algorithm accepts a map object and a party object
+Declare a RNG object, a char to hold the move directio choice, and a bool to hold if the party's move choice is allowed
+While the move is not allowed:
+Ask the user where they would like to go and print the options as well
+Accept the user input into the move choice
+Check if the move choice is allowed using the .move function (if it is by checking you will also be moving)
+If it is not allowed print out a message to inform the user
+After exiting the while loop (if the party moved) loop through the party and individually determine if that player loses a fullness point
+*/
+
+void move(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer);
+
+void investigate(party &mainParty);
+
 
 //Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
 /*
@@ -50,7 +74,7 @@ robbed (chosen at random) 30%
 */
 
 // Randomly causes one of the end of turn misfortunes to the party
-bool endOfTurnMisfortune(party &mainParty, bool wasLastActionExitRoomOpenedWithKey);
+bool endOfTurnMisfortune(party &mainParty, int misfortuneProb, bool wasLastActionExitRoomOpenedWithKey);
 
 // Reads in monsters to the provided vector from the file
 bool readInMonsters(vector<Monster> &monsters, string filename);
