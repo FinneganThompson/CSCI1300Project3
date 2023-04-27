@@ -119,18 +119,21 @@ cookware::cookware(int inputIntType){
             type_ = "Ceramic pot";
             cost_ = 5;
             breakProb_ = 0.25;
+            quantity_ = 0;
             break;
         }
         case 2:{
             type_ = "Frying pan";
             cost_ =10;
             breakProb_ = 0.1;
+            quantity_ = 0;
             break;
         }
         case 3:{
             type_ = "Cauldron";
             cost_ = 20;
             breakProb_ = 0.02;
+            quantity_ = 0;
             break;
         }
     }
@@ -148,6 +151,16 @@ int cookware::getBreakProb(){
     return breakProb_;
 }
 
+// returns the amount of that type of cookware
+int cookware::getQuantity(){
+    return quantity_;
+}
+
+// sets the quantity
+void cookware::setQuantity(int inputQuantity){
+    quantity_ = inputQuantity;
+}
+
 
 // Default constructor for inventory
 inventory::inventory()
@@ -157,6 +170,8 @@ inventory::inventory()
     armor_ = 0;
     treasure rings(1), necklaces(2), bracelets(3), circlets(4), goblets(5);
     treasures_ = {rings, necklaces, bracelets, circlets, goblets};
+    cookware pots(1), pans(2), cauldrons(3);
+    cookwares_ = {pots,pans,cauldrons};
 }
 
 // !!TO DO!! Returns sum of all amount values of ingredient vector
@@ -210,6 +225,7 @@ void inventory::addGold(int numPieces)
 // Add weapon to inventory
 void inventory::addWeapons(weapon weaponToAdd)
 {
+    //if(weapons_.size() == 5){}
     weapons_.push_back(weaponToAdd);
     return;
 }
@@ -224,6 +240,18 @@ bool inventory::removeWeapon(int weaponToRemove)
     else return false;
 }
 
+// Removes armor. Returns success
+bool inventory::removeArmor(int armorToRemove){
+    if((armor_ - armorToRemove) >= 0){
+        armor_ -= armorToRemove;
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+/*
 bool inventory::removeCookware(int cookwareToRemove)
 {
    if (cookwares_.size() > cookwareToRemove)
@@ -233,6 +261,19 @@ bool inventory::removeCookware(int cookwareToRemove)
     }
     else return false; 
 }
+*/
+
+bool inventory::removeCookware(int cookwareToRemove)
+{
+   if (cookwares_.at(cookwareToRemove).getQuantity() > 0)
+    {
+        //cookwares_.erase(cookwares_.begin() + cookwareToRemove);
+        changeCookwareQuantity(cookwareToRemove,-1);
+        return true;
+    }
+    else return false; 
+}
+
 
 // Add armor to inventory
 void inventory::addArmor(int inputArmor){
@@ -244,18 +285,11 @@ void inventory::addArmor(int inputArmor){
     }
 }
 
-// Add cookware to inventory
-void inventory::addCookware(cookware cookwareToAdd)
-{
-    cookwares_.push_back(cookwareToAdd);
-    return;
-}
-
 // Returns false is cookware breaks and removes from vector
-bool inventory::useCookware(vector<cookware> cookwares_, int vectPos){
+bool inventory::useCookware(int type){
     RNG prob;
-    if(prob.doesActionOccur(cookwares_.at(vectPos).getBreakProb()) == true){
-        cookwares_.erase(cookwares_.begin()+vectPos);
+    if(prob.doesActionOccur(cookwares_.at(type).getBreakProb()) == true){
+        changeCookwareQuantity(type,-1);
         return false;
     }
     else{
@@ -266,6 +300,20 @@ bool inventory::useCookware(vector<cookware> cookwares_, int vectPos){
 // changes the amount of that type of treasure
 void inventory::changeTreasureQuantity(int type, int quantChange){
     treasures_.at(type).setQuantity(treasures_.at(type).getQuantity() + quantChange);
+}
+
+// changes the amount of that type of cookware
+void inventory::changeCookwareQuantity(int type, int quantChange){
+    cookwares_.at(type).setQuantity(cookwares_.at(type).getQuantity() + quantChange);
+}
+
+// returns how much cookware the party has
+int inventory::totalCookware(){
+    int sum = 0;
+    for(int i = 0; i < 3; i++){
+        sum += cookwares_.at(i).getQuantity();
+    }
+    return sum;
 }
 
 // !!TO DO!! Determines if a cookware use is sucessful (if requested cookware exists), and uses up ingredients in cooking
