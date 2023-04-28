@@ -143,7 +143,7 @@ for room spaces
 	give up
     */
 
-void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gameOver, vector<Monster> monsters){
+void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gameOver, vector<Monster> &monsters){
     vector<string> turnOptions = {"Move to a different space","Open the room door","Give up on your adventure"};
     int spaceChoice;
     char proceed = 'n';
@@ -173,10 +173,20 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
             //if(mainParty.getRoomsCleared() < 5){}
             RNG random;
             if(mainParty.getKeysFound() > 0){ // get into room with key
+                // Check for sorcerer
+                if(mainParty.getRoomsCleared() == 4)
+                {
+                    cout << "You got in the room using a key. Inside you see the Sorcerer.\n";
+                    fightSorcerer(mainParty, gameSorcerer, monsters);
+                    break;
+                }
+            
                 cout << "You got in the room using a key, inside you see a monster.\n" << endl; 
                 // check if player wins the fight
                 if(fightMonster(monsters, mainParty, true) == true){ // win
+                    mainParty.loseKey();
                     endOfTurnMisfortune(mainParty, 60, true); // 60%
+                    mainParty.increaseRoomsCleared();
                 }
                 else{ // loss
                     mainParty.loseKey(); 
@@ -192,11 +202,21 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
             else{ // no key
                 //check if player wins boulder, parchment, sheers 
                 if(doorPuzzle() == true){ // win
+                    // Check for sorcerer
+                    if(mainParty.getRoomsCleared() == 4)
+                    {
+                        cout << "You got in without a key. Inside you see the Sorcerer.\n";
+                        fightSorcerer(mainParty, gameSorcerer, monsters);
+                        break;
+                    }
+            
                     cout << "Dispite not having a key, you got in the room. Inside you see a monster.\n" << endl; 
                     fightMonster(monsters, mainParty, false);
                     // check if player wins the fight
                     if(fightMonster(monsters, mainParty, false) == true){ // win
                         endOfTurnMisfortune(mainParty, 40, false); // 40%
+                        mainParty.increaseRoomsCleared();
+
                     }
                     else{ // loss
                         mainParty.loseKey();
@@ -359,15 +379,15 @@ int main(){
 }
 
 /*
-sort out after sorcer is defeated, no more anger increase, no more monsters
+sort out after sorcer is defeated, no more anger increase (done), no more monsters (monsters taken care of by final battle function)
 
-is there a limit on weapons 
+is there a limit on weapons  (don't think so)
 
-fight sorcerer is not called
+fight sorcerer is not called (not done)
 
 
 sometimes "nothing turned up" doesn't print from investigation
-why is The remaning players in your party are: printing twice
+why is The remaning players in your party are: printing twice (fixed)
 
 i have only written for if they choose to leave, if they have too few players, or if the sorcerer's anger gets to 100
 
