@@ -22,6 +22,7 @@ class Sorcerer{
     string name;
     int level;
     int anger;
+    bool doesAngerIncrease_ ;
 
     public:
     // no default constructor 
@@ -34,6 +35,7 @@ class Sorcerer{
     int getAnger();
     // to be used each turn since it can only increase by one
     void increaseAnger();
+    void angerNoLongerIncreases(); // When the sorcerer is defeated
 };
 
 #endif
