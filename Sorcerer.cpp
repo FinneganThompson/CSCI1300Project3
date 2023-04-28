@@ -14,6 +14,7 @@ Sorcerer :: Sorcerer(string inputName, int inputLevel){
     name = inputName;
     level = inputLevel;
     anger = 0;
+    doesAngerIncrease_ = true;
 }
 string Sorcerer :: getName(){
     return name;
@@ -31,5 +32,12 @@ int Sorcerer :: getAnger(){
     return anger;
 }
 void Sorcerer :: increaseAnger(){
-    anger += 1;
+    if (doesAngerIncrease_)
+        anger += 1;
+    else return;
+}
+
+void Sorcerer::angerNoLongerIncreases()
+{
+    doesAngerIncrease_ = false; 
 }
