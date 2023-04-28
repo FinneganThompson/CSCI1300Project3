@@ -689,6 +689,10 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
         {
             monsterLevelNeeded = 5;
         }
+        else if (monsterLevelNeeded == 0)
+        {
+            monsterLevelNeeded = 1;
+        }
     } 
 
     // Get all monsters of the correct level
@@ -726,10 +730,13 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom)
     // calculate the battle outcome
     double outcomeOfBattle = ((r1*w)+d)-((r2*c)/(a+0.1));
     cout << '\n' << "You have chosen to fight " << monsterToFight.getName() << ". Prepare for battle!" << endl;
-    cout << "(Press enter to see who wins!)" << endl;
     // Wait for the user to hit enter (for suspense)
-    char trashVar;
-    cin >> trashVar;
+    do 
+    {
+        cout << "(Press enter to see who wins!)\n" << endl;
+        cin.get();
+    } while (cin.get() != '\n' );
+
 
     // Wins battle
     if (outcomeOfBattle > 0)
@@ -852,6 +859,7 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
             monsters.pop_back();
         }
         cout << "You have defeated me in a battle of wits! My dungeon is now yours." << endl;
+        mainSorcerer.angerNoLongerIncreases();
         return true;
     }
     return false;
