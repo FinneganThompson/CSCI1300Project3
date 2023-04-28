@@ -93,4 +93,4 @@ bool readInMonsters(vector<Monster> &monsters, string filename);
 bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom);
 
 // Complete sorcerer fight sequence 
-bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer); 
+bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &monsters); 
