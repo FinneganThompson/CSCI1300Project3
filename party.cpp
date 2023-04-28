@@ -35,7 +35,7 @@ int spacesExplored, int monstersDefeated, int turnsElapsed)
             break;
         }
     }
-    cout << "The remaning players in your party are:\n";
+    outFile << "The remaning players in your party are:\n";
     for(int i=0; i<players.size(); i++)
     {
         if (!players.at(i).isUserPlayer)
@@ -192,6 +192,10 @@ void party::loseBattle()
     RNG randomGenerator;
     int goldToLose = partyInventory_.goldAvalible() / 4; // Gold to lose
     int ingredientsToLose = randomGenerator.randIntOnRange(0,partyInventory_.totalIngredientsAvliable()/2); // Ingredients to lose (cannot lose more than half)
+    if (partyInventory_.totalIngredientsAvliable() == 0)
+    {
+        ingredientsToLose = 0;
+    }
 
     // Go through all players and check to see if they die
     for (int i = 0; i<players_.size(); i++)
