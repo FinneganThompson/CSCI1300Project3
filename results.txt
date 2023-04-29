@@ -208,3 +208,18 @@ Currently held treasure items:
 Spaces explored: 0
 Monsters defeated: 0
 Turns elapsed: 0
+You lost.
+August
+The remaning players in your party are:
+Megan
+Rooms cleared: 0
+Gold remaining: 100
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 2
+Monsters defeated: 0
+Turns elapsed: 3
