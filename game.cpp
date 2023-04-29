@@ -878,7 +878,7 @@ bool fightSorcerer(party &mainParty, Map &mainMap, Sorcerer &mainSorcerer, vecto
             {
                 cout << "Correct. How did you know that?!?!?" << endl;
                 correctAns[j] = true;
-                continue;
+                break;
             }
             else if (j=0)
             {
