@@ -165,15 +165,14 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                     }
             
                     cout << "Dispite not having a key, you got in the room. Inside you see a monster.\n" << endl; 
-                    fightMonster(monsters, mainParty, false, gameOver);
+                    bool monsterFightResult = fightMonster(monsters, mainParty, false, gameOver);
                     // check if player wins the fight
-                    if(fightMonster(monsters, mainParty, false, gameOver) == true){ // win
+                    if(monsterFightResult == true){ // win
                         endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
                         mainParty.increaseRoomsCleared();
 
                     }
                     else{ // loss
-                        mainParty.loseKey();
                         endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
                     }
                     if(random.doesActionOccur(50) == true){
@@ -246,11 +245,12 @@ void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &game
         }
         case 2:{//speak to NPC
             // spaces becomes normal and explored 
-            if(NPCPuzzle() == true){
+            bool doesNPCPuzzle = NPCPuzzle();
+            if(doesNPCPuzzle == true){
                 cout << "Congratulations on completing my riddle, allow me to offer my services!\n" << endl;
                 merchantMenu(mainParty);
             }
-            else if(NPCPuzzle() == false){
+            else if(doesNPCPuzzle == false){
                 RNG random;
                 cout << "Not too clever I see. Say hello to my friend. HAHAHA!\n" << endl;
                 fightMonster(monsters, mainParty, false, gameOver);
