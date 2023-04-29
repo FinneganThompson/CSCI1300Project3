@@ -1,5 +1,9 @@
 *Formerly gameNotes.md*
 
+Compilation command: g++ mainDriver.cpp Map.cpp Map.h Monster.cpp Monster.h RNG.cpp RNG.h Sorcerer.cpp Sorcerer.h game.cpp game.h item.cpp item.h party.cpp party.h puzzles.cpp puzzles.h move.cpp move.h
+
+
+
 Map should generate randomly 
 Enter names of player and party members (each has 50 fullness points, bellow 0 means death)gameNotes.md
 Start with 100 gold 
