@@ -27,6 +27,7 @@ int spacesExplored, int monstersDefeated, int turnsElapsed)
     }
     else outFile << "You lost.\n";
 
+    outFile << "The main player is: ";
     for(int i=0; i<players.size(); i++)
     {
         if (players.at(i).isUserPlayer)
@@ -255,7 +256,7 @@ void party::loseBattle(bool &gameOver)
   }
 }
 
-// !! TO DO !! Party loses one non-main member and their items as appropiate. 50% food drop by 1. 
+//Party loses one non-main member and their items as appropiate. 50% food drop by 1. 
 void party::surrenderBattle(bool &gameOver){
     RNG randomGenerator;
     cout << "You have chosen to surrender this battle." << endl;
@@ -281,7 +282,7 @@ void party::surrenderBattle(bool &gameOver){
     return;
 }
 
-// !! TO DO !! Returns all starving players
+//Returns all starving players
 vector<player> party::starvingPlayers()
 {
    vector<player> starvingPlayers;
@@ -327,7 +328,7 @@ void party::killPlayerNoMessage(string name){
     return;
 }
 
-// !! TO DO !! Removes player + items and prints hunger death message
+// Removes player + items and prints hunger death message
 void party::killPlayerOfHunger(string name, bool &gameOver){
     cout << name <<" has died of hunger. Your party grows smaller..." << endl;
     killPlayerNoMessage(name);
@@ -409,6 +410,7 @@ void party::loseGame(int deathType){
         default:
             cout << "You have lost the game" << endl;
     }
+    cout << "Your party leader is: ";
     for(int i=0; i<players_.size(); i++)
     {
         if (players_.at(i).isUserPlayer)
