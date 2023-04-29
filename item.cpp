@@ -12,6 +12,7 @@
 
 // parameterized constructor for weapon class, set based on the type of input 
 weapon::weapon(int inputIntType){
+    // since each type has unique information the switch allows for the type to determine what weapon is made with the proper infromation
     switch(inputIntType){
         case 1:{ // club
             type_ = "Club";
@@ -60,6 +61,9 @@ int weapon::getMod(){
 
 // Validates type and sets price based on type
 treasure::treasure(int inputIntType){
+    // since each type has unique information the switch allows for the type to determine what treasure is made with the proper infromation
+    // they all have a quantity variable so rather than having several of the same type in the treasures vector  the amount of that type of 
+    /// treasure can be stored there 
     switch(inputIntType){
         case 1:{
             type_ = "Silver ring";
@@ -115,6 +119,9 @@ void treasure::setQuantity(int inputQuantity){
 // parameterized constructor for cookware class, sets type and price based on type
 
 cookware::cookware(int inputIntType){
+    // since each type has unique information the switch allows for the type to determine what cookware is made with the proper infromation
+    // they all have a quantity variable so rather than having several of the same type in the cookware vector  the amount of that type of 
+    /// cookware can be stored there 
     switch(inputIntType){
         case 1:{
             type_ = "Ceramic pot";
@@ -175,7 +182,7 @@ inventory::inventory()
     cookwares_ = {pots,pans,cauldrons};
 }
 
-// !!TO DO!! Returns sum of all amount values of ingredient vector
+// Returns sum of all amount values of ingredient vector
 int inventory::totalIngredientsAvliable()
 {
     return ingredients_;

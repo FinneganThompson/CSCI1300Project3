@@ -14,7 +14,7 @@
 #include <iostream>
 #include <fstream>
 
-
+// adds all relevent info to the results file
 bool createResultsFile(vector<player> players, bool didPartyWin, int roomsCleared, int goldRemaining, vector<treasure> treasuresRemaining, 
 int spacesExplored, int monstersDefeated, int turnsElapsed)
 {
@@ -90,7 +90,7 @@ void party::loseKey() {
 
 void party::incrementTurn() {turnsElapsed_++; return;} // Inc by 1
 
-void party::addPlayer(player playerToAdd)
+void party::addPlayer(player playerToAdd) 
 {
     players_.push_back(playerToAdd);
     return;
@@ -104,60 +104,83 @@ vector<player> party::getPlayers()
 
 /*
 Algorithm allows the player to cook food and, if successful, have the party gain fullness points
-Check to make sure that the party has enough ingredients 
-Have the user enter how much they want 
+Check to make sure that the party has enough ingredients and that they have enough cookware
+Have the user enter how much they want to cook
+Validate the amount, that it is possible, an increment of 5 and is not 0
+Find out what the user would like to cook with and validate that they have at least one of that cookware type 
+Then use the cookware to cook
+Inform the user whether or not it worked, add or decrease items/ hunger levels as appropriate 
+Print out the fullness of all party members and the amount of ingreadients the party has left
 */
 
 void party::cookAndEat(){
     cout << "In order to cook a meal, you must have at least 5kg of ingredients and can only cook in 5kg increments." << endl <<
     "For each 5kg of ingredients cooked, your whole party will gain back 1 fullness point, however no one can exceed more than 50 fullness points.\n" << endl;
+    // make sure the party has enough to cook with
     if(partyInventory_.totalIngredientsAvliable() < 5){
         cout << "Unfortunately it looks like you don't have enough ingredients for a meal, better hope you find a merchant!\n"<< endl;
     }
-    else{
+    // make sure that the party has enough cookware to cook with
+    else if(partyInventory_.totalCookware() < 1){
+        cout << "Looks like you don't have any thing to cook with... perhaps go find someone who will sell some to you.\n" << endl;
+    }
+    else{ // if they have enough to cook with (ingredients and cookware)
+        // for all randomly generated numbers
         RNG random;
+        // The quantity is one higher so that it can enter the loop
         int quantity = partyInventory_.totalIngredientsAvliable() + 1, typeCookware;
+        // holds whether or not the player 
         bool canCook = false;
+        // stay in while the user has not entered a quantity they can use
         while(quantity > partyInventory_.totalIngredientsAvliable()){
             cout << "How much would you like to cook?\n" << endl;
             cin >> quantity;
             cout << endl;
+            // validate the user input, that it is not greater than what the party has, that it is an increment of 5, and that it is not none
             if(quantity > partyInventory_.totalIngredientsAvliable() || quantity % 5 != 0 || quantity == 0){
                 cout << "Hmm... I am not sure you can cook with that amount. Make sure you have enough ingredients and it is an increment of 5!\n" << endl;
                 quantity = partyInventory_.totalIngredientsAvliable() + 1;
             }
-            else{
+            else{ // if valid input
+                // stay in loop while until the user has picked a valid cookware
                 while(canCook == false){
                     cout << "What would you like to cook with?\n1. Pot\n2. Frying pan\n3. Cauldron\n" << endl;
                     cin >> typeCookware;
                     cout << endl;
+                    // validate cookware type input
                     if(typeCookware < 1 || typeCookware > 3){
                         cout << "I'm not even sure that exists!\n" << endl;
                     }
+                    // validates that the party has enough of that cookware to cook with
                     else if(partyInventory_.cookwareAvailible().at(typeCookware-1).getQuantity() < 1){
                         cout << "Looks like you dont have enough " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                         "s to cook with one. Try something else.\n" << endl;
                     }
-                    else{
+                    else{// if both validations are passed
                         canCook = true;
                     }
                 }
+                // use the cookware and if the cookware breaks 
                 if(partyInventory_.useCookware(typeCookware-1) == false){
                     cout << "Oh no! Your " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                     " broke while trying to use it. Unfortunately that means no food, a waste of ingredients, and you no longer have your " << 
                     partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << ".\n" << endl;
+                    // allows the loop to be exited no matter what
                     quantity = partyInventory_.totalIngredientsAvliable() - 1;
                     break;
                 }
-                else{
+                else{// if the cookware does not break
                     cout << "Your food was cooked successfully! Everyone in your party gains " << (quantity/5) << " fullness point(s).\n" << endl;
+                    // increase all party members hunger by the proper amount
                     for(int i = 0; i < getPlayers().size(); i++){
                         addHunger(i,(quantity/5));
                     }
                 }
+                // regardless of cooking outcome remove the amount from the party inventory
                 partyInventory_.addIngredients(-quantity);
             }
         }
+        // print fullness and the current amount of ingredients the party has
         printFullness();
         cout << endl << "You have " << partyInventory_.totalIngredientsAvliable() << "kg of ingredients left.\n" << endl;
     }
@@ -207,7 +230,6 @@ void party::winBattle(string monsterName, bool &gameOver)
   return;
 }
 
-// !! TO DO !! Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. 
 //Prints death message if neccesary. 50% food drop by 1. 
 void party::loseBattle(bool &gameOver)
 {
@@ -299,23 +321,6 @@ vector<player> party::starvingPlayers()
     return starvingPlayers;
 }
 
- // !! TO DO !! Returns filled status:
- /*
- Number of rooms cleared 
- Keys found
-fullness of each party member 
-Ingredients (kg) 
-cookware available
-Weapons and armor available
-Gold available 
-Treasure items available 
-Sorcerer’s anger
- */
- // partyStatus party::getStatus()
-
- // !! TO DO !! Returns all of the contributors to the sucess of an attack that are parts of the party class.
-// partyDependentAttackContributors getPartyDependentAttackContributors()
-
 // Removes a player and thier items as appropriate
 void party::killPlayerNoMessage(string name){
      partyInventory_.removeArmor(1);
@@ -345,15 +350,7 @@ void party::killPlayerOfHunger(string name, bool &gameOver){
     return;
 }
 
-// !! TO DO !! Game win: Print out nesary info from party class
-/*
-    name of leader and remaining members
-    number of rooms cleared
-    gold remaining
-    treasure items
-    number of spaces explored
-    number of monsters defeated
-*/
+// prints out messages and relevant end game info if game is won
 void party::winGame(){
     cout << "You have won the game!\n" << "Your party leader is: \n";
     for(int i=0; i<players_.size(); i++)

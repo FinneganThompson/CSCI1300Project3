@@ -68,7 +68,7 @@ class party{
         void addPlayer(player playerToAdd);
         vector<player> getPlayers(); 
 
-        void cookAndEat(); // Prompts for kg ingredients and cookware. Hunger increases are dist. equally
+        void cookAndEat(); // allows the player to cook food and, if successful, have the party gain fullness points
         bool removeHunger(int playerPosition, int hungerToRemove); // Removes hunger from the player at position playerPosition in the players_ vector. Returns false if removing that much hunger would kill the player. 
         void addHunger(int playerPosition, int hungerToAdd); // Adds hunger points
 

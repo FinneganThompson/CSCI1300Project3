@@ -67,15 +67,22 @@ Accepts a sorcerer, map, and party object
 Declare a vector to hold all the monsters a player can fight
 Read in all the monsters to that vector
 Declare a bool to hold whether or not the game is over
-Enter a loop that will keep going until 
+Enter a loop that will keep going until the game is over
+Each iteration of the loop the space that the party is on is checked and depending on what type of space it is, different type of turn options will apear
 */
 
 void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
+    // creates and read in the monsters to the vector
     vector<Monster> monsters;
     readInMonsters(monsters, "monsters.txt");
+    // holds whether or not the game is over
     bool gameOver = false;
+    // loops as long as the game does not end
     while(gameOver == false){
+        // check to see if any of the players are starving
+        // vector hols all starving players
         vector<player> starvingPlayers = mainParty.starvingPlayers();
+        // if there is at least one starving loop through all the starving party members and print out their names
         if(starvingPlayers.size() > 0){
             cout << "It may be a good idea to cook soon, your party has some players that are on the brink of starving:\n" << endl;
             for(int i = 0; i < starvingPlayers.size(); i++){
@@ -83,37 +90,52 @@ void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
             }
             cout << endl;
         }
+        // print out the status update and display the map
         statusUpdate(mainParty,gameSorcerer);
         mainMap.displayMap();
         cout << endl;
+        // check if the space is a room space
         if(mainMap.isRoomLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){ // room space
             roomSpace(mainMap, mainParty, gameSorcerer, gameOver, monsters);
         }
+        // check if the space is a NPC space
         else if(mainMap.isNPCLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){ // NPC space
             npcSpace(mainMap, mainParty, gameSorcerer, gameOver, monsters);
         }
+        // check if the space is the dungeon exit space
         else if(mainMap.isDungeonExit(mainMap.getPlayerRow(),mainMap.getPlayerCol())){ // exit space
+            // check if the party has cleared all the rooms and if so wins the game and will exit 
             if(mainParty.getRoomsCleared() == 5){
                 mainParty.winGame();
                 gameOver = true;
+                break;
             }
+            // holds the user input for what they would like to do
             int spaceChoice = -1;
+            // holds the options for what the user can do
             vector<string> moveOptions= {"Move","Give up"};
+            // holds whether or not the user would like to proceed with the move choice
             char proceed = 'n';
             cout << "You have made it to the exit... However, you cannot leave without defeating all the monsters and the Sorcerer." << endl;
+            // loop until the 
             while(proceed == 'n'){
+                // print out the user's options
                 cout << "Would you like to:\n1. " << moveOptions.at(0) << endl << "2. " << moveOptions.at(1) << "?\n" << endl;
                 cin >> spaceChoice;
                 cout << endl;
+                // validate the user input
                 if(spaceChoice != 1 && spaceChoice != 2){
                     cout << "I am not sure what you mean, please only pick one of the choices.\n" << endl;
                 }
-                else{
+                else{ // if the input is valide
+                    // resets the proceed variable so that the user's input can be validated
                     proceed = 'l';
+                    // stay in the loop until the user enters valid input
                     while(proceed != 'y' && proceed != 'n'){
                         cout << "Are you sure you'd like to " << moveOptions.at(spaceChoice-1) << "? (y/n)\n" << endl;
                         cin >> proceed;
                         cout << endl;
+                        // validate the user input
                         if(proceed != 'y' && proceed != 'n'){
                             cout << "What was that? I couldn't understand you, please only answer y or n.\n" << endl;
                         }
@@ -122,23 +144,26 @@ void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
             }
            
             switch(spaceChoice){
-                case 1:{ // move
+                case 1:{ // if the user would like to move
                     move(mainMap, mainParty, gameSorcerer);
                 }
-                case 2:{ // give up
+                case 2:{ // if the user would like to give up
                     mainParty.loseGame(0);
                     gameOver = true;
                 }
             }
         }
-        else{ // normal space
+        else{ // check if the space is a regular space
             normalSpace(mainMap, mainParty, gameSorcerer,gameOver, monsters);
         }
+        // increase the count of turns that have been taken
         mainParty.incrementTurn();
+        // check if just the party leader is left
         if(mainParty.getPlayers().size() < 2){
             mainParty.loseGame(1);
             gameOver = true;
         }
+        // check if the sorcerers anger has reached the max
         else if(gameSorcerer.getAnger() == 100){
             mainParty.loseGame(3);
             gameOver = true;
@@ -162,7 +187,9 @@ int main(){
         int xNPC = rand() % 12, yNPC = rand() % 12;
         mainMap.addNPC(xNPC,yNPC);
     }
+    // the first part of the game
     beforeEntry(mainParty);
+    // the game
     inDungeon(gameSorcerer, mainMap, mainParty);
     return 0;
 }
@@ -171,16 +198,4 @@ int main(){
 monster from room appeared again ~
 
 said that the monsters were all gone but then one showed up and was one i had beaten, monster showed up again
-
-can't beat sorcerer
-
-score = numPlayersLeft*100 (include player if they do not die) + roomsCleared*200 + treasure(each iteam * cost for each*10) + spacesExplored*2 + 
-monstersDefeated (should we use level)*40 (exclude sorcerer) + didDefeatSorcerer - (turns elapsed) - sorcerer anger
-score = 500 + 1000 + __ + 288 + __ + 1000 - __ - 100
-print monsters defeated
-    level 1: 
-    level 2:
-    etc
-
-
 */
