@@ -896,6 +896,7 @@ bool fightSorcerer(party &mainParty, Map &mainMap, Sorcerer &mainSorcerer, vecto
             {
                 cout << "You have failed! Now face the consequences..." << endl;
                 mainParty.loseGame(4);
+                exit(0);
                 return false;
             }
         }
