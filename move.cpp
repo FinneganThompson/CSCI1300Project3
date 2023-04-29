@@ -148,6 +148,9 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                 {
                     cout << "You got in the room using a key. Inside you see the Sorcerer.\n";
                     fightSorcerer(mainParty, mainMap, gameSorcerer, monsters);
+		    endOfTurnMisfortune(mainParty, 60, true, gameOver); // 60%
+                    mainParty.increaseRoomsCleared();
+                    mainMap.removeRoom(mainMap.getPlayerRow(),mainMap.getPlayerCol());
                     break;
                 }
             
@@ -178,6 +181,9 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                     {
                         cout << "You got in without a key. Inside you see the Sorcerer.\n";
                         fightSorcerer(mainParty, mainMap, gameSorcerer, monsters);
+			endOfTurnMisfortune(mainParty, 60, true, gameOver); // 60%
+                    	mainParty.increaseRoomsCleared();
+                   	mainMap.removeRoom(mainMap.getPlayerRow(),mainMap.getPlayerCol());
                         break;
                     }
             
