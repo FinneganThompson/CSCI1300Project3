@@ -218,7 +218,12 @@ void inventory::addIngredients(int inputIngredients){
 // Add gold to inventory
 void inventory::addGold(int numPieces)
 {
-    goldPieces_ += numPieces;
+    if((goldPieces_ + numPieces) < 0){
+        goldPieces_ = 0;
+    }
+    else{
+        goldPieces_ += numPieces;
+    }
     return;
 }
 
