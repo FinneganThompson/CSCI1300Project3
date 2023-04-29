@@ -434,8 +434,46 @@ Accepts a party object
 Loop through the party and print the fullness points for each member
 */
 
+// selection sort
+void selectionSort(vector<int> &values){
+    int max;
+    for(int i = 0; i < values.size(); i++){
+        max = i;
+        //cout << "OG " << values.at(i) << endl;
+        for(int j = i + 1; j < values.size(); j++){
+            //cout << " " << values.at(y) << endl;
+            if(values.at(j) > values.at(max)){
+                max = j;
+            }
+        }
+        if(max != i){
+            int holder = values.at(i);
+            values.at(i) = values.at(max);
+            values.at(max) = holder;
+        }
+        //cout << values.at(i);
+    }
+    cout << endl;
+}
+
+
 void party::printFullness(){
     cout << "+-------------+\n| PARTY       |\n+-------------+" << endl;
+    // selection sort
+    int max;
+    for(int i = 0; i < players_.size(); i++){
+        max = i;
+        for(int j = i + 1; j < players_.size(); j++){
+            if(players_.at(j).hunger > players_.at(max).hunger){
+                max = j;
+            }
+        }
+        if(max != i){
+            player holder = players_.at(i);
+            players_.at(i) = players_.at(max);
+            players_.at(max) = holder;
+        }
+    }
     // loop through all the party members and print out their fullness
     for(int i = 0; i < players_.size(); i++){
         cout << "| " << players_.at(i).name << " | Fullness: " << players_.at(i).hunger << endl;

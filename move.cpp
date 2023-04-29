@@ -265,6 +265,7 @@ void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &game
                 cout << "You may not have completed my riddle but since I couldn't find them, I shall still offer my services.\n" << endl;
                 merchantMenu(mainParty);
             }
+            // not working
             mainMap.exploreSpace(mainMap.getPlayerRow(),mainMap.getPlayerCol());
             endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
             break;
