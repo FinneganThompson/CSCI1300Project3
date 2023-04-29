@@ -122,6 +122,7 @@ void party::cookAndEat(){
             cout << endl;
             if(quantity > partyInventory_.totalIngredientsAvliable() || quantity % 5 != 0){
                 cout << "Hmm... I am not sure you can cook with that amount. Make sure you have enough ingredients and its an increment of 5!\n" << endl;
+                quantity = partyInventory_.totalIngredientsAvliable() + 1;
             }
             else{
                 while(canCook == false){
@@ -236,7 +237,7 @@ void party::loseBattle(bool &gameOver)
         
     }
     // Remove the gold
-    partyInventory_.spendGold(goldToLose);
+    partyInventory_.addGold(-goldToLose);
 
     // Remove the ingredients 
     partyInventory_.addIngredients(-ingredientsToLose);

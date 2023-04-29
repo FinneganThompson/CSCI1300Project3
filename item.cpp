@@ -323,12 +323,11 @@ bool inventory::useCookware(char type, int kgIngredientsUsed)
     return true;
 }
 
-// Checks if sufficient gold is avalible, subtracts it if true
+// Checks if sufficient gold is avalible
 bool inventory::spendGold(int amountToSpend)
 {
     if (goldPieces_ >= amountToSpend)
     {
-        goldPieces_ == amountToSpend;
         return true;
     }
     else return false;

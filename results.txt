@@ -388,3 +388,122 @@ Currently held treasure items:
 Spaces explored: 0
 Monsters defeated: 0
 Turns elapsed: 0
+You lost.
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: 100
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 6
+You lost.
+a
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: 57
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 12
+You lost.
+a
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: -50
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 0
+You lost.
+a
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: 0
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 0
+You lost.
+a
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: 15
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 3
+You lost.
+a
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: 19
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 2
+You lost.
+a
+The remaning players in your party are:
+a
+Rooms cleared: 0
+Gold remaining: 100
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 0
+Monsters defeated: 0
+Turns elapsed: 0
+You lost.
+August
+The remaning players in your party are:
+Seven
+Rooms cleared: 3
+Gold remaining: -42
+Currently held treasure items: 
+	Silver ring
+	Ruby necklace
+	Emerald bracelet
+	Diamond circlet
+	Gem-encrusted goblet
+Spaces explored: 29
+Monsters defeated: 9
+Turns elapsed: 115

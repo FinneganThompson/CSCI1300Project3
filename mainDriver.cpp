@@ -163,17 +163,9 @@ int main(){
 /*
 monster from room appeared again ~
 
-BPS not changing answer
-
-how much would you like to cook with is called twice (not called twice anymore)
-
-didn't loop back into cooking
-
 said that the monsters were all gone but then one showed up and was one i had beaten, monster showed up again
 
 can't beat sorcerer
-
-math for monster fight seems possibly off (not working right)
 
 score = numPlayersLeft*100 (include player if they do not die) + roomsCleared*200 + treasure(each iteam * cost for each*10) + spacesExplored*2 + 
 monstersDefeated (should we use level)*40 (exclude sorcerer) + didDefeatSorcerer - (turns elapsed) - sorcerer anger
