@@ -902,8 +902,6 @@ bool fightSorcerer(party &mainParty, Map &mainMap, Sorcerer &mainSorcerer, vecto
         }
 
     }
-    if (correctAns[1] && correctAns[0])
-    {
         // removes room space
         mainMap.removeRoom(mainMap.getPlayerRow(),mainMap.getPlayerCol());
         // Remove all monsters
@@ -914,6 +912,4 @@ bool fightSorcerer(party &mainParty, Map &mainMap, Sorcerer &mainSorcerer, vecto
         cout << "You have defeated me in a battle of wits! My dungeon is now yours." << endl;
         mainSorcerer.angerNoLongerIncreases();
         return true;
-    }
-    return false;
 }
