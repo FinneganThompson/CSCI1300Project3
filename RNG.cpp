@@ -38,7 +38,7 @@ int RNG::randIntOnRange(int lowerBound, int upperBound)
     {
         return -1;
     }
-    else if (lowerBound = upperBound)
+    else if (lowerBound == upperBound)
     {
         return 0;
     }
