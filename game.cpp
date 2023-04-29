@@ -89,6 +89,7 @@ void merchantMenu(party &mainParty){
             case 1:{ // ingredients 
                 cout << "I recommend having at least 10 kg per person of ingredients." << endl;
                 // only exits loop if cancel option is selected or if purchase goes through
+                quantity = -1;
                 while(quantity != 0){
                     cout << "How many kg of ingredients do you need [1 Gold/kg]? (Enter a positive mulitple of 5, or 0 to cancel)\n" << endl;
                     cin >> quantity;
@@ -227,7 +228,7 @@ void merchantMenu(party &mainParty){
                             if(quantity < 0){
                                 // "I'm sorry, I dont understand, what do you want?\n"
                                 // << " " << wep << "(s)
-                                cout << "I can't give you " << quantity << "weapons, please ask for a real amount.\n" << endl;
+                                cout << "I can't give you " << quantity << " weapons, please ask for a real amount.\n" << endl;
                             }
                             // assuming user has not wanted to exit and input is valid
                             else if(quantity != 0){
@@ -271,6 +272,7 @@ void merchantMenu(party &mainParty){
                 "The catch is that you can only have 1 armor per person in your party and " <<
                 "any armor beyond that will not increase your chances further.\n" << endl; 
                 // checks that the user does not want to exit the loop
+                quantity = -1;
                 while(quantity != 0){
                     cout << "How many suits of armor can I get you? (Enter a positive integer, or 0 to cancel)\n" << endl;
                     cin >> quantity;
@@ -782,6 +784,11 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom, bo
         bool isKeyDropped = randomGenerator.doesActionOccur(10);
         mainParty.partyInventory_.addIngredients(ingredientsToCollect);
         mainParty.partyInventory_.addGold(goldToCollect);
+        for(int i = 0; i < monsters.size(); i++){
+            if(monsters.at(i).getName() == monsterToFight.getName()){
+                monsters.erase(monsters.begin() + i);
+            }
+        }
 
         if (isKeyDropped) // 10% of key being dropped
         {
@@ -812,7 +819,7 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom, bo
 
 
 // Party must win and complete a puzzle!
-bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &monsters)
+bool fightSorcerer(party &mainParty, Map &mainMap, Sorcerer &mainSorcerer, vector<Monster> &monsters)
 {
 
     bool correctAns[2] = {false,false};
@@ -889,6 +896,8 @@ bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &mo
     }
     if (correctAns[1] && correctAns[0])
     {
+        // removes room space
+        mainMap.removeRoom(mainMap.getPlayerRow(),mainMap.getPlayerCol());
         // Remove all monsters
         while(monsters.size() > 0)
         {

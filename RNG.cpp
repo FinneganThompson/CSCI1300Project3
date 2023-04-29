@@ -47,4 +47,3 @@ int RNG::randIntOnRange(int lowerBound, int upperBound)
     int randomInt = rand() % range + lowerBound;
     return randomInt;
 }
-

@@ -131,7 +131,7 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                 if(mainParty.getRoomsCleared() == 4)
                 {
                     cout << "You got in the room using a key. Inside you see the Sorcerer.\n";
-                    fightSorcerer(mainParty, gameSorcerer, monsters);
+                    fightSorcerer(mainParty, mainMap, gameSorcerer, monsters);
                     break;
                 }
             
@@ -141,6 +141,7 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                     mainParty.loseKey();
                     endOfTurnMisfortune(mainParty, 60, true, gameOver); // 60%
                     mainParty.increaseRoomsCleared();
+                    mainMap.removeRoom(mainMap.getPlayerRow(),mainMap.getPlayerCol());
                 }
                 else{ // loss
                     mainParty.loseKey(); 
@@ -160,7 +161,7 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                     if(mainParty.getRoomsCleared() == 4)
                     {
                         cout << "You got in without a key. Inside you see the Sorcerer.\n";
-                        fightSorcerer(mainParty, gameSorcerer, monsters);
+                        fightSorcerer(mainParty, mainMap, gameSorcerer, monsters);
                         break;
                     }
             
@@ -170,7 +171,7 @@ void roomSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &gam
                     if(monsterFightResult == true){ // win
                         endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
                         mainParty.increaseRoomsCleared();
-
+                        mainMap.removeRoom(mainMap.getPlayerRow(),mainMap.getPlayerCol());
                     }
                     else{ // loss
                         endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
@@ -266,7 +267,7 @@ void npcSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &game
                 merchantMenu(mainParty);
             }
             // not working
-            mainMap.exploreSpace(mainMap.getPlayerRow(),mainMap.getPlayerCol());
+            mainMap.removeNPC(mainMap.getPlayerRow(),mainMap.getPlayerCol());
             endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
             break;
         }

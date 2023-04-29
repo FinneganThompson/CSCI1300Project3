@@ -77,7 +77,15 @@ int party::getNumMonstersDefeated() {return numMonstersDefeated_;}
 void party::increaseRoomsCleared() {roomsCleared_++; return;} // Inc. by 1
 void party::increaseSpacesExplored() {spacesExplored_++; return;} // Inc. by 1
 void party::increaseKeysFound() {keysFound_++; return;} // Inc. by 1
-void party::loseKey() {keysFound_--; return;} // Decr by 1 
+
+// Decr by 1 
+void party::loseKey() {
+    if(keysFound_ > 0){
+        keysFound_--; 
+    }
+    return;
+    } 
+
 void party::incrementTurn() {turnsElapsed_++; return;} // Inc by 1
 
 void party::addPlayer(player playerToAdd)
@@ -91,6 +99,12 @@ vector<player> party::getPlayers()
 {
     return players_;
 }
+
+/*
+Algorithm allows the player to cook food and, if successful, have the party gain fullness points
+Check to make sure that the party has enough ingredients 
+Have the user enter how much they want 
+*/
 
 void party::cookAndEat(){
     cout << "In order to cook a meal, you must have at least 5kg of ingredients and can only cook in 5kg increments." << endl <<
@@ -111,11 +125,13 @@ void party::cookAndEat(){
             }
             else{
                 while(canCook == false){
-                    cout << "And what would you like to cook with?\n1. Pot\n2. Frying pan\n3. Cauldron\n" << endl;
+                    cout << "What would you like to cook with?\n1. Pot\n2. Frying pan\n3. Cauldron\n" << endl;
                     cin >> typeCookware;
                     cout << endl;
-                    cout << partyInventory_.cookwareAvailible().at(typeCookware-1).getQuantity() << endl << endl;
-                    if(partyInventory_.cookwareAvailible().at(typeCookware-1).getQuantity() < 1){
+                    if(typeCookware < 1 || typeCookware > 3){
+                        cout << "I'm not even sure that exists!\n" << endl;
+                    }
+                    else if(partyInventory_.cookwareAvailible().at(typeCookware-1).getQuantity() < 1){
                         cout << "Looks like you dont have enough " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                         "s to cook with one. Try something else.\n" << endl;
                     }
@@ -124,7 +140,7 @@ void party::cookAndEat(){
                     }
                 }
                 if(partyInventory_.useCookware(typeCookware-1) == false){
-                    cout << "Oooo, your " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
+                    cout << "Oh no! Your " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                     " broke while trying to use it. Unfortunately that means no food, a waste of ingredients, and you no longer have your " << 
                     partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << ".\n" << endl;
                 }
@@ -429,47 +445,32 @@ void party::loseGame(int deathType){
 }
 
 /*
-Algorithm prints the fullness points of each player in the party
-Accepts a party object
-Loop through the party and print the fullness points for each member
+Algorithm prints the fullness of the whole party
+Sorts the players vector from greatest fullness to least using selection sort
+Loop through all players and print them out
 */
-
-// selection sort
-void selectionSort(vector<int> &values){
-    int max;
-    for(int i = 0; i < values.size(); i++){
-        max = i;
-        //cout << "OG " << values.at(i) << endl;
-        for(int j = i + 1; j < values.size(); j++){
-            //cout << " " << values.at(y) << endl;
-            if(values.at(j) > values.at(max)){
-                max = j;
-            }
-        }
-        if(max != i){
-            int holder = values.at(i);
-            values.at(i) = values.at(max);
-            values.at(max) = holder;
-        }
-        //cout << values.at(i);
-    }
-    cout << endl;
-}
-
 
 void party::printFullness(){
     cout << "+-------------+\n| PARTY       |\n+-------------+" << endl;
     // selection sort
     int max;
+    // loop through the whole vector
     for(int i = 0; i < players_.size(); i++){
+        // set the max value index equal to the current value
         max = i;
+        // go through all the values after the current value
         for(int j = i + 1; j < players_.size(); j++){
+            // check if the hunger at the current max value index is less than the current value
             if(players_.at(j).hunger > players_.at(max).hunger){
+                // if so set the max index equal to the current index
                 max = j;
             }
         }
+        // if the max value index has changed from the initial max value index 
         if(max != i){
+            // create a player to hold the initial max hunger value information
             player holder = players_.at(i);
+            // swap the players
             players_.at(i) = players_.at(max);
             players_.at(max) = holder;
         }

@@ -2,19 +2,33 @@ Animated Armor,1
 Bugbear,1
 Harpy,1
 Scarecrow,1
+Swarm of leaches,1
 Minotaur,2
 Owlbear,2
 Banshee,2
 Wereboar,2
+Cristal Chicken,2
 Giant Crocodile,3
 Troll,3
 Hobgoblin Warlord,3
 Mammoth,3
+Bad Report Card,3
 Stone Giant,4
 Night Hag,4
 Assassin,4
 Hydra,4
+Baby Dragon,4
+Angry TA,4
 Cloud Giant,5
 Silver Dragon,5
 Vampire,5
 Lich,5
+Beholder,5
+Devil,5
+Chrimera,5
+Demogorgon,5
+Sorcerer's assistant,5
+Black Dragon,5
+Yeti,5
+Angry Professor,5
+Blue Dragon,5

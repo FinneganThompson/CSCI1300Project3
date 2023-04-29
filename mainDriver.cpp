@@ -67,7 +67,7 @@ void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
     vector<Monster> monsters;
     readInMonsters(monsters, "monsters.txt");
     bool gameOver = false;
-    while(!mainMap.isDungeonExit(mainMap.getPlayerRow(),mainMap.getPlayerCol()) && gameOver == false){
+    while(gameOver == false){
         vector<player> starvingPlayers = mainParty.starvingPlayers();
         if(starvingPlayers.size() > 0){
             cout << "It may be a good idea to cook soon, your party has some players that are on the brink of starving:\n" << endl;
@@ -79,22 +79,62 @@ void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
         statusUpdate(mainParty,gameSorcerer);
         mainMap.displayMap();
         cout << endl;
-        if(mainMap.isRoomLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+        if(mainMap.isRoomLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){ // room space
             roomSpace(mainMap, mainParty, gameSorcerer, gameOver, monsters);
         }
-        else if(mainMap.isNPCLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){
+        else if(mainMap.isNPCLocation(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == true){ // NPC space
             npcSpace(mainMap, mainParty, gameSorcerer, gameOver, monsters);
-        }else{
+        }
+        else if(mainMap.isDungeonExit(mainMap.getPlayerRow(),mainMap.getPlayerCol())){ // exit space
+            if(mainParty.getRoomsCleared() == 5){
+                mainParty.winGame();
+                gameOver = true;
+            }
+            int spaceChoice = -1;
+            vector<string> moveOptions= {"Move","Give up"};
+            char proceed = 'n';
+            cout << "You have made it to the exit... However, you cannot leave without defeating all the monsters and the Sorcerer." << endl;
+            while(proceed == 'n'){
+                cout << "Would you like to:\n1. " << moveOptions.at(0) << endl << "2. " << moveOptions.at(1) << "?\n" << endl;
+                cin >> spaceChoice;
+                cout << endl;
+                if(spaceChoice != 1 && spaceChoice != 2){
+                    cout << "I am not sure what you mean, please only pick one of the choices.\n" << endl;
+                }
+                else{
+                    proceed = 'l';
+                    while(proceed != 'y' && proceed != 'n'){
+                        cout << "Are you sure you'd like to " << moveOptions.at(spaceChoice-1) << "? (y/n)\n" << endl;
+                        cin >> proceed;
+                        cout << endl;
+                        if(proceed != 'y' && proceed != 'n'){
+                            cout << "What was that? I couldn't understand you, please only answer y or n.\n" << endl;
+                        }
+                    }
+                }
+            }
+           
+            switch(spaceChoice){
+                case 1:{ // move
+                    move(mainMap, mainParty, gameSorcerer);
+                }
+                case 2:{ // give up
+                    mainParty.loseGame(0);
+                    gameOver = true;
+                }
+            }
+        }
+        else{ // normal space
             normalSpace(mainMap, mainParty, gameSorcerer,gameOver, monsters);
         }
         mainParty.incrementTurn();
         if(mainParty.getPlayers().size() < 2){
             mainParty.loseGame(1);
-            break;
+            gameOver = true;
         }
         else if(gameSorcerer.getAnger() == 100){
             mainParty.loseGame(3);
-            break;
+            gameOver = true;
         }
     }
 
@@ -121,7 +161,19 @@ int main(){
 }
 
 /*
-if all monsters are defeated throws an error, does not show fourth level 1
+monster from room appeared again ~
+
+BPS not changing answer
+
+how much would you like to cook with is called twice (not called twice anymore)
+
+didn't loop back into cooking
+
+said that the monsters were all gone but then one showed up and was one i had beaten, monster showed up again
+
+can't beat sorcerer
+
+math for monster fight seems possibly off (not working right)
 
 score = numPlayersLeft*100 (include player if they do not die) + roomsCleared*200 + treasure(each iteam * cost for each*10) + spacesExplored*2 + 
 monstersDefeated (should we use level)*40 (exclude sorcerer) + didDefeatSorcerer - (turns elapsed) - sorcerer anger
