@@ -146,10 +146,12 @@ void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
             switch(spaceChoice){
                 case 1:{ // if the user would like to move
                     move(mainMap, mainParty, gameSorcerer);
+                    break;
                 }
                 case 2:{ // if the user would like to give up
                     mainParty.loseGame(0);
                     gameOver = true;
+                    break;
                 }
             }
         }

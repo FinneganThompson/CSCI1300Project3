@@ -182,7 +182,7 @@ inventory::inventory()
     cookwares_ = {pots,pans,cauldrons};
 }
 
-// Returns sum of all amount values of ingredient vector
+// Returns the amount of ingredients that the party has
 int inventory::totalIngredientsAvliable()
 {
     return ingredients_;
@@ -244,6 +244,7 @@ void inventory::addWeapons(weapon weaponToAdd)
     }
 }
 
+// removes 
 bool inventory::removeWeapon(int weaponToRemove)
 {
     if (weapons_.size() > weaponToRemove)
