@@ -70,7 +70,7 @@ After exiting the while loop (if the party moved) loop through the party and ind
 
 void move(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer);
 
-void investigate(party &mainParty);
+void investigate(party &mainParty, bool &gameOver);
 
 
 //Each turn there is a 40% one of the misfortunes will occur. Misfortunes:
@@ -84,13 +84,13 @@ robbed (chosen at random) 30%
 */
 
 // Randomly causes one of the end of turn misfortunes to the party
-bool endOfTurnMisfortune(party &mainParty, int misfortuneProb, bool wasLastActionExitRoomOpenedWithKey);
+bool endOfTurnMisfortune(party &mainParty, int misfortuneProb, bool wasLastActionExitRoomOpenedWithKey, bool &gameOver);
 
 // Reads in monsters to the provided vector from the file
 bool readInMonsters(vector<Monster> &monsters, string filename);
 
 // Complete fight sequence
-bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom);
+bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom, bool &gameOver);
 
 // Complete sorcerer fight sequence 
 bool fightSorcerer(party &mainParty, Sorcerer &mainSorcerer, vector<Monster> &monsters); 

@@ -47,7 +47,7 @@ class cookware
         string type_; // P: pot; F: frying pan; C: Cauldron
         int cost_; // Will be set by constructor
         int breakProb_;
-        int quantity_;
+        int quantity_ = 0;
     public:
         cookware(int inputIntType); // Validates type and sets price based on type
         string getType(); // Returns cookware type

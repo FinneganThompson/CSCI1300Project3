@@ -71,9 +71,9 @@ class party{
         bool removeHunger(int playerPosition, int hungerToRemove); // Removes hunger from the player at position playerPosition in the players_ vector. Returns false if removing that much hunger would kill the player. 
         void addHunger(int playerPosition, int hungerToAdd); // Adds hunger points
 
-        void winBattle(string monsterName); // iterates num monsters defeated by 1 adds to monsters defeated. 50% chance for each player to lose one hunger
-        void loseBattle(); // Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. Prints death message. 50% food drop by 1. 
-        void surrenderBattle(); // Party loses one non-main member and items as appropiate. 50% food drop by 1. 
+        void winBattle(string monsterNamebool, bool &gameOver); // iterates num monsters defeated by 1 adds to monsters defeated. 50% chance for each player to lose one hunger
+        void loseBattle(bool &gameOver); // Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. Prints death message. 50% food drop by 1. 
+        void surrenderBattle(bool &gameOver); // Party loses one non-main member and items as appropiate. 50% food drop by 1. 
 
 
         vector<player> starvingPlayers(); // Returns all starving players
@@ -81,7 +81,7 @@ class party{
         // partyDependentAttackContributors getPartyDependentAttackContributors(); // Returns filled struct. 
 
         void killPlayerNoMessage(string name); // Removes player and items as appropriate
-        void killPlayerOfHunger(string name); // Removes player + items and prints hunger death message
+        void killPlayerOfHunger(string name, bool &gameOver); // Removes player + items and prints hunger death message
 
         void winGame(); // Game is won
         void loseGame(int deathType); // Type 0:Give up; 1: all but main player die; 2: main player dies; 3: Sorcerer's anger

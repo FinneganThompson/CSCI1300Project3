@@ -106,26 +106,27 @@ void party::cookAndEat(){
             cout << "How much would you like to cook?\n" << endl;
             cin >> quantity;
             cout << endl;
-            if(quantity > partyInventory_.totalIngredientsAvliable()){
-                cout << "You don't have enough ingredients for that.\n" << endl;
+            if(quantity > partyInventory_.totalIngredientsAvliable() || quantity % 5 != 0){
+                cout << "Hmm... I am not sure you can cook with that amount. Make sure you have enough ingredients and its an increment of 5!\n" << endl;
             }
             else{
                 while(canCook == false){
                     cout << "And what would you like to cook with?\n1. Pot\n2. Frying pan\n3. Cauldron\n" << endl;
                     cin >> typeCookware;
                     cout << endl;
-                    if(partyInventory_.cookwareAvailible().at(typeCookware).getQuantity() < 1){
-                        cout << "Looks like you dont have enough " << partyInventory_.cookwareAvailible().at(typeCookware).getType() << 
+                    cout << partyInventory_.cookwareAvailible().at(typeCookware-1).getQuantity() << endl << endl;
+                    if(partyInventory_.cookwareAvailible().at(typeCookware-1).getQuantity() < 1){
+                        cout << "Looks like you dont have enough " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                         "s to cook with one. Try something else.\n" << endl;
                     }
                     else{
                         canCook = true;
                     }
                 }
-                if(partyInventory_.useCookware(typeCookware) == false){
-                    cout << "Oooo, your " << partyInventory_.cookwareAvailible().at(typeCookware).getType() << 
+                if(partyInventory_.useCookware(typeCookware-1) == false){
+                    cout << "Oooo, your " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                     " broke while trying to use it. Unfortunately that means no food, a waste of ingredients, and you no longer have your " << 
-                    partyInventory_.cookwareAvailible().at(typeCookware).getType() << ".\n" << endl;
+                    partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << ".\n" << endl;
                 }
                 else{
                     cout << "Your food was cooked successfully! Everyone in your party gains " << (quantity/5) << " fullness point(s).\n" << endl;
@@ -167,7 +168,7 @@ void party::addHunger(int playerPosition, int hungerToAdd){
 }
 
 // iterates num monsters defeated by 1 adds to monsters defeated. 50% chance for each player to lose one hunger
-void party::winBattle(string monsterName)
+void party::winBattle(string monsterName, bool &gameOver)
 {
   RNG randomGenerator;
   monstersDefeated_.push_back(monsterName); // Add name to monsters defeated
@@ -179,7 +180,7 @@ void party::winBattle(string monsterName)
     if (randomGenerator.doesActionOccur(50)) 
     {
         if (removeHunger(i,1)) continue; // If losing the 1 hunger would kill them, kill them. 
-        else killPlayerOfHunger(players_.at(i).name);
+        else killPlayerOfHunger(players_.at(i).name, gameOver);
     }
   }
   return;
@@ -187,7 +188,7 @@ void party::winBattle(string monsterName)
 
 // !! TO DO !! Lose 1/4 of gold, up to 30kg food, each party member wearing armor has 5% death, otherwise 10% death. 
 //Prints death message if neccesary. 50% food drop by 1. 
-void party::loseBattle()
+void party::loseBattle(bool &gameOver)
 {
     RNG randomGenerator;
     int goldToLose = partyInventory_.goldAvalible() / 4; // Gold to lose
@@ -232,13 +233,13 @@ void party::loseBattle()
     if (randomGenerator.doesActionOccur(50))
     {
         if (removeHunger(i,1)) continue;
-        else killPlayerOfHunger(players_.at(i).name);
+        else killPlayerOfHunger(players_.at(i).name, gameOver);
     }
   }
 }
 
 // !! TO DO !! Party loses one non-main member and their items as appropiate. 50% food drop by 1. 
-void party::surrenderBattle(){
+void party::surrenderBattle(bool &gameOver){
     RNG randomGenerator;
     cout << "You have chosen to surrender this battle." << endl;
     int playerToKill = 0;
@@ -257,7 +258,7 @@ void party::surrenderBattle(){
         if (randomGenerator.doesActionOccur(50))
         {
             if (removeHunger(i,1)) continue;
-            else killPlayerOfHunger(players_.at(i).name);
+            else killPlayerOfHunger(players_.at(i).name, gameOver);
         }
     }
     return;
@@ -310,9 +311,16 @@ void party::killPlayerNoMessage(string name){
 }
 
 // !! TO DO !! Removes player + items and prints hunger death message
-void party::killPlayerOfHunger(string name){
+void party::killPlayerOfHunger(string name, bool &gameOver){
     cout << name <<" has died of hunger. Your party grows smaller..." << endl;
     killPlayerNoMessage(name);
+    for(int i = 0; i < getPlayers().size(); i++){
+        if(name == getPlayers().at(i).name && getPlayers().at(i).isUserPlayer == true){
+            loseGame(2);
+            bool gameOver = true;
+        }
+        
+    }
     return;
 }
 

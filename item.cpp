@@ -225,9 +225,10 @@ void inventory::addGold(int numPieces)
 // Add weapon to inventory
 void inventory::addWeapons(weapon weaponToAdd)
 {
-    //if(weapons_.size() == 5){}
-    weapons_.push_back(weaponToAdd);
-    return;
+    if(weapons_.size() < 5){
+        weapons_.push_back(weaponToAdd);
+        return;
+    }
 }
 
 bool inventory::removeWeapon(int weaponToRemove)
