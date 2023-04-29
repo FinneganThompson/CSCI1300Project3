@@ -57,6 +57,7 @@ int spacesExplored, int monstersDefeated, int turnsElapsed)
     outFile << "Spaces explored: " << spacesExplored << endl;
     outFile << "Monsters defeated: " << monstersDefeated << endl;
     outFile << "Turns elapsed: " << turnsElapsed << endl;
+    exit(0);
     return true;
 }
 
