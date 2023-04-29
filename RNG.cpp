@@ -34,11 +34,15 @@ int RNG::randIntBetweenOneAndTen() // Returns random int between one and ten (no
 
 int RNG::randIntOnRange(int lowerBound, int upperBound)
 {
-    if (lowerBound >= upperBound)
+    if (lowerBound > upperBound)
     {
         return -1;
     }
-    
+    else if (lowerBound = upperBound)
+    {
+        return 0;
+    }
+
     int range = upperBound - lowerBound + 1;
     int randomInt = rand() % range + lowerBound;
     return randomInt;
