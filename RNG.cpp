@@ -2,6 +2,7 @@
 * RNG.cpp
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
 *
 * File includes random number generating functions
 */
@@ -32,18 +33,18 @@ int RNG::randIntBetweenOneAndTen() // Returns random int between one and ten (no
     return randomInt;
 }
 
-int RNG::randIntOnRange(int lowerBound, int upperBound)
+int RNG::randIntOnRange(int lowerBound, int upperBound) // Returns int between lower and upper bound inclusively
 {
-    if (lowerBound > upperBound)
+    if (lowerBound > upperBound) // This makes sure that the lower bound does not exceed the upper bound
     {
         return -1;
     }
-    else if (lowerBound == upperBound)
+    else if (lowerBound == upperBound) // This makes sure that they are not equal
     {
         return 0;
     }
 
-    int range = upperBound - lowerBound + 1;
-    int randomInt = rand() % range + lowerBound;
+    int range = upperBound - lowerBound + 1; // This gives us the range
+    int randomInt = rand() % range + lowerBound; // This finds the randum number
     return randomInt;
 }

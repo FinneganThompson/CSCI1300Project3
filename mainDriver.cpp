@@ -2,53 +2,52 @@
 * mainDriver.cpp
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
 *
+* the driver file for the game, and includes the base structers for the game
 */
 
 #include "game.h"
 #include "move.h"
 #include <cassert>
 
-/* phase 1
-Map should generate randomly 
-Enter names of player and party members (each has 50 fullness points, bellow 0 means death)
-Start with 100 gold 
-game ends when sorcer gets 100 anger 
-Get merchnat menu
+
+/*
+Algorithm enacts the first part of the game
+Accepts a party object
+Creates all the players (make sure the leader is indicated)
+Ask the user to enter the names of the players and pass them to the player objects
+Set all the players hunger to 50 and add them to the party object
+Set the party's gold to 100
+Explain what each thing that can be purchased does
+Call the merchant menu function
 */
-
-/* phase 2
-Display status update 
-Display map 
-Display action menu (type depends on turn type)
-
-*/
-
-// to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
-
-/**/
 
 void beforeEntry(party &mainParty){
-    //print scoreboard
     // creates the player objects for the party
     player partyLeader, member1, member2, member3, member4;
+    // indicates that the partyLeader player is the leader
     partyLeader.isUserPlayer = true;
+    // set all the party members names to the user input
     cout << "Please enter names for you and your party:" << endl;
     cout << "Your name: ";
     cin >> partyLeader.name;
     cout << "Names for 4 more party members:" << endl;
     cin >> member1.name >> member2.name >> member3.name >> member4.name;
     cout << endl;
+    // set all the player's hunger to 50
     partyLeader.hunger = 50;
     member1.hunger = 50;
     member2.hunger = 50;
     member3.hunger = 50;
     member4.hunger = 50;
+    // add all the player members to the party
     mainParty.addPlayer(partyLeader);
     mainParty.addPlayer(member1);
     mainParty.addPlayer(member2);
     mainParty.addPlayer(member3);
     mainParty.addPlayer(member4);
+    // set the party's gold to 100
     mainParty.partyInventory_.addGold(100);
     cout << "Between the 5 of you, you have 100 gold pieces.\nYou will need to spend the some of your money on the following items:\n" << endl;
     cout << "- INGREDIENTS. To make food, you have to cook raw ingredients." << endl <<
@@ -57,11 +56,19 @@ void beforeEntry(party &mainParty){
     "- ARMOR. Armor increases the chances of surviving a monster attack.\n" << endl <<
     "You can spend all of your money here before you start your journey, or you can save some to spend on merchants along the way." << endl << 
     "But beware, some of the merchants in this dungeon are shady characters, and they won't always give you a fair price...\n" << endl;
+    // print out and do the merchant menu
     merchantMenu(mainParty);
 }
 
 
-/**/
+/*
+Algorithm enacts the turns that happen through out the game until the game is over
+Accepts a sorcerer, map, and party object
+Declare a vector to hold all the monsters a player can fight
+Read in all the monsters to that vector
+Declare a bool to hold whether or not the game is over
+Enter a loop that will keep going until 
+*/
 
 void inDungeon(Sorcerer &gameSorcerer, Map &mainMap, party &mainParty){
     vector<Monster> monsters;

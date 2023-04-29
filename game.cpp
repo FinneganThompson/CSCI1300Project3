@@ -1,3 +1,12 @@
+/*
+* game.cpp
+* CSCI 1300 Project 3, Spring 2023
+* August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
+* 
+* implementations of all game.h functions
+*/
+
 #include "game.h"
 
 
@@ -34,9 +43,9 @@ void printInventory(inventory partyInventory){
         }
     }
     // prints out the whole inventory, including the counts for each item in the inventory
+    // for treasure and cookware because the amount of each type is a part of those items we check the quantity of the item at 
     cout << "+-------------+\n| INVENTORY   |\n+-------------+" << endl <<
     "| Gold        | " << partyInventory.goldAvalible() << endl << 
-    // edit so that we get weight 
     "| Ingredients | " << partyInventory.totalIngredientsAvliable() << " kg" << endl << 
     "| Cookware    | P: " << partyInventory.cookwareAvailible().at(0).getQuantity() << " | F: " << partyInventory.cookwareAvailible().at(1).getQuantity() << 
     " | C: " << partyInventory.cookwareAvailible().at(2).getQuantity() << endl <<
@@ -177,9 +186,7 @@ void merchantMenu(party &mainParty){
                                     // only if they want to proceed with purchase
                                     if(buy != 'n'){
                                         mainParty.partyInventory_.addGold(-cost);
-                                        for(int i = 0; i < quantity; i++){
-                                            mainParty.partyInventory_.changeCookwareQuantity(type-1,quantity);
-                                        }
+                                        mainParty.partyInventory_.changeCookwareQuantity(type-1,quantity);
                                         //allows both loops to be exited
                                         type = 4;
                                         break;

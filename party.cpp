@@ -2,6 +2,7 @@
 * party.cpp
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
 *
 * implementations for the party class
 */
@@ -121,8 +122,8 @@ void party::cookAndEat(){
             cout << "How much would you like to cook?\n" << endl;
             cin >> quantity;
             cout << endl;
-            if(quantity > partyInventory_.totalIngredientsAvliable() || quantity % 5 != 0){
-                cout << "Hmm... I am not sure you can cook with that amount. Make sure you have enough ingredients and its an increment of 5!\n" << endl;
+            if(quantity > partyInventory_.totalIngredientsAvliable() || quantity % 5 != 0 || quantity == 0){
+                cout << "Hmm... I am not sure you can cook with that amount. Make sure you have enough ingredients and it is an increment of 5!\n" << endl;
                 quantity = partyInventory_.totalIngredientsAvliable() + 1;
             }
             else{
@@ -145,6 +146,8 @@ void party::cookAndEat(){
                     cout << "Oh no! Your " << partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << 
                     " broke while trying to use it. Unfortunately that means no food, a waste of ingredients, and you no longer have your " << 
                     partyInventory_.cookwareAvailible().at(typeCookware-1).getType() << ".\n" << endl;
+                    quantity = partyInventory_.totalIngredientsAvliable() - 1;
+                    break;
                 }
                 else{
                     cout << "Your food was cooked successfully! Everyone in your party gains " << (quantity/5) << " fullness point(s).\n" << endl;

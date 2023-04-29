@@ -2,6 +2,7 @@
 * item.cpp
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
 *
 *  Implementations for all functions in item.h
 */
@@ -118,21 +119,21 @@ cookware::cookware(int inputIntType){
         case 1:{
             type_ = "Ceramic pot";
             cost_ = 5;
-            breakProb_ = 0.25;
+            breakProb_ = 25;
             quantity_ = 0;
             break;
         }
         case 2:{
             type_ = "Frying pan";
             cost_ =10;
-            breakProb_ = 0.1;
+            breakProb_ = 10;
             quantity_ = 0;
             break;
         }
         case 3:{
             type_ = "Cauldron";
             cost_ = 20;
-            breakProb_ = 0.02;
+            breakProb_ = 2;
             quantity_ = 0;
             break;
         }

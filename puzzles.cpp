@@ -2,6 +2,7 @@
 * puzzles.cpp
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
 *
 * implementaitons of puzzles used in the game
 */

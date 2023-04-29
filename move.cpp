@@ -1,4 +1,16 @@
+/*
+* move.cpp
+* CSCI 1300 Project 3, Spring 2023
+* August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
+* 
+* implementations of all move.h functions
+*/
+
+
 #include "move.h"
+
+
 
 
 
@@ -71,6 +83,10 @@ void normalSpace(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer, bool &g
             break;
         }
         case 4:{// cook and eat
+            if(mainParty.partyInventory_.totalIngredientsAvliable() < 5){
+                cout << "You do not have enough ingredients to cook.\n" << endl;
+                break;
+            }
             mainParty.cookAndEat();
             endOfTurnMisfortune(mainParty, 40, false, gameOver); // 40%
             break;

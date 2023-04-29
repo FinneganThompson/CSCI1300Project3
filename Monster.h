@@ -2,6 +2,7 @@
 * Monster.h
 * CSCI 1300 Project 3, Spring 2023
 * August Milliken & Finnegan Thompson
+* to run: g++ mainDriver.cpp item.cpp Monster.cpp Sorcerer.cpp party.cpp Map.cpp game.cpp RNG.cpp puzzles.cpp move.cpp
 *
 * File includes monster class
 */
@@ -23,10 +24,10 @@ class Monster{
     // no default constructor 
     // parameterized constructor
     Monster(string inputName, int inputLevel);
-    string getName();
-    void setName(string inputName);
-    int getLevel();
-    void setLevel(int inputLevel);
+    string getName();// get monster name
+    void setName(string inputName);// set monster name
+    int getLevel();// get monster level
+    void setLevel(int inputLevel);// set monster level
 };
 
 #endif
