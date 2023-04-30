@@ -9,7 +9,6 @@
 
 #include "game.h"
 
-
 /*
 Algorithm prints out everything that is in the party's inventory 
 Accepts the party's inventory object 
@@ -57,7 +56,7 @@ void printInventory(inventory partyInventory){
 }
 
 /*
-Algorithm is an interactive menu to allow a user to buy or sell items 
+//Algorithm is an interactive menu to allow a user to buy or sell items 
 Accepts a party object
 Declare an inventory object to hold the party's inventory
 Declare an integer to hold the value of how much the cost should change (based on how many rooms have been cleared), one to hold the main menu choice,
@@ -99,28 +98,32 @@ void merchantMenu(party &mainParty){
                 cout << "I recommend having at least 10 kg per person of ingredients." << endl;
                 // only exits loop if cancel option is selected or if purchase goes through
                 quantity = -1;
+                // to stay in until the user enters the exit value
                 while(quantity != 0){
                     cout << "How many kg of ingredients do you need [1 Gold/kg]? (Enter a positive mulitple of 5, or 0 to cancel)\n" << endl;
                     cin >> quantity;
                     cout << endl;
-                    // checks valid input
+                    // checks for valid input
                     if(quantity % 5 != 0 || quantity < 0){
                         cout << "I can only sell in 5 kg amounts, they come in bags you see. So..." << endl;
                     }
                     // makes it so that the can only buy if the input is valid and is not the cancel input
                     else if(quantity != 0){
-                        // creates the cost 
+                        // creates the cost of the ingredients
                         cost = quantity+(quantity*costChange);
                         // checks to make sure that the party has enough gold to spend
                         if(mainParty.partyInventory_.spendGold(cost) == false){
                             cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                         }
-                        else{
+                        else{ // if the party does have enough gold
+                            // resets to validate user input
                             buy = 'l';
+                            // stay in until the user enters valid input
                             while(buy != 'n' && buy != 'y'){
                                 cout << "You want to buy " << quantity << " kg of ingredients for " << cost << " Gold? (y/n)\n" << endl;
                                 cin >> buy;
                                 cout << endl;
+                                // output if the user does not give valid input
                                 if(buy != 'n' && buy != 'y'){
                                     cout << "What kind of an answer is that? I only understand y or n.\n" << endl; 
                                 }
@@ -139,6 +142,7 @@ void merchantMenu(party &mainParty){
                 break;
             }
             case 2:{ // cookware
+                // resets input if needed
                 type = 0;
                 cout << "I have a several types of cookware, which one would you like?" << endl <<
                 "Each type has a different probability of breaking when used, marked with (XX%).\n" << endl;
@@ -157,6 +161,7 @@ void merchantMenu(party &mainParty){
                         cookware cook(type);
                         // resets the quantity in case the user has selected 0 (to cancel the transaction)
                         quantity = -1;
+                        // checks if the user wants to exit
                         while(quantity != 0){
                             cout << "How many would you like? (Enter a positive integer, or 0 to cancel)\n" << endl;
                             cin >> quantity;
@@ -168,17 +173,21 @@ void merchantMenu(party &mainParty){
                             }
                             // assuming input is valid and not the exit input
                             else if(quantity != 0){
+                                // creates the cost of the cookware
                                 cost = (quantity*cook.getCost())+(quantity*cook.getCost()*costChange);
                                 // checks to make sure that the party has enough gold to spend
                                 if(mainParty.partyInventory_.spendGold(cost) == false){
                                     cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                                 }
-                                else{
+                                else{ // if there is enough gold
+                                    // reseets so variable so it can be validated
                                     buy = 'l';
+                                    // to stay in until the user gives valid input
                                     while(buy != 'n' && buy != 'y'){
                                         cout << "You want to buy " << quantity << " "<< cook.getType() << "(s) for " << cost << " Gold? (y/n)\n" << endl;
                                         cin >> buy;
                                         cout << endl;
+                                        // output if the user input is invalid
                                         if(buy != 'n' && buy != 'y'){
                                             cout << "What kind of an answer is that? I only understand y or n.\n" << endl; 
                                         }
@@ -200,10 +209,12 @@ void merchantMenu(party &mainParty){
                 break;
             }
             case 3:{ // weapons
+                // checks to see if  the party can no longer add weapons
                 if(mainParty.partyInventory_.weaponsAvalible().size() == 5){
                     cout << "You are at your limit for all the weapons you can hold.\n" << endl;
                     break;
                 }
+                // resets variable just in case
                 type = 0;
                 cout << "You need weapons to be able to fend off monsters, otherwise, you can only run! " <<
                 "Lucky for you, I have a plentiful collection of weapons to choose from." << endl <<
@@ -244,13 +255,16 @@ void merchantMenu(party &mainParty){
                                 if(mainParty.partyInventory_.spendGold(cost) == false){
                                     cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                                 }
-                                else {
+                                else { // if the party has enough gold
+                                    // resets variable so it can be validated
                                     buy = 'l';
+                                    // stays in until the user gives valid input
                                     while(buy != 'n' && buy != 'y'){
                                         cout << "You want to buy " << quantity << " (+" << wep.getMod() << ") " << wep.getType() << 
                                         "(s) for " << cost << " Gold? (y/n)\n" << endl;
                                         cin >> buy;
                                         cout << endl;
+                                        // output if input is invalid
                                         if(buy != 'n' && buy != 'y'){
                                             cout << "What kind of an answer is that? I only understand y or n.\n" << endl; 
                                         }
@@ -258,6 +272,7 @@ void merchantMenu(party &mainParty){
                                     // only if they want to proceed with purchase
                                     if(buy != 'n'){
                                         mainParty.partyInventory_.addGold(-cost);
+                                        // adds the weapons to the vector, loops in case the user wants more than one of the same type
                                         for(int i = 0; i < quantity; i++){
                                             mainParty.partyInventory_.addWeapons(wep);
                                         }
@@ -288,6 +303,7 @@ void merchantMenu(party &mainParty){
                     if(quantity < 0){
                         cout << "Well now, I'm not sure I can give you " << quantity << " armor, my boss might get upset.\n" << endl;
                     }
+                    // in case the user wants to exit
                     else if(quantity != 0){
                         // calculates the cost of the quantity
                         cost = (quantity*5)+(quantity*5*costChange);
@@ -295,12 +311,15 @@ void merchantMenu(party &mainParty){
                         if(mainParty.partyInventory_.spendGold(cost) == false){
                             cout << "You do not have enough gold for this quantity of this item.\n" << endl;
                         }
-                        else{
+                        else{ // if the user has enough gold
+                            // resets so that the variable can be validated
                             buy = 'l';
+                            // stay in until the user enters valid input
                             while(buy != 'n' && buy != 'y'){
                                 cout << "You want to buy " << quantity << " suit(s) of armor for " << cost << " Gold? (y/n)\n" << endl;
                                 cin >> buy;
                                 cout << endl;
+                                // output if input is invalid
                                 if(buy != 'n' && buy != 'y'){
                                     cout << "What kind of an answer is that? I only understand y or n.\n" << endl; 
                                 }
@@ -319,6 +338,7 @@ void merchantMenu(party &mainParty){
                 break;
             }
             case 5:{ // sell
+                // just in case it needs to be reset 
                 type = 0;
                 // create a vector to hold the party's treasure
                 vector<treasure> partyTreasure = mainParty.partyInventory_.treasureAvailible();
@@ -368,14 +388,19 @@ void merchantMenu(party &mainParty){
                                     cout << "Unfortunately you do not have " << quantity << " " << treas.getType() << 
                                     "(s)\n" << endl;
                                 }
+                                // if user does not want to exit
                                 else if(quantity != 0){
+                                    // creates the price for the treasure 
                                     cost = (quantity*treas.getPrice());
+                                    // resets so variable can be validated
                                     buy = 'l';
+                                    // stay in until user enters valid input
                                     while(buy != 'n' && buy != 'y'){
                                         cout << "You want to sell " << quantity << " " << treas.getType() << "(s) for " << cost << " Gold? (y/n)\n" << endl;
                                         // buy is used but really it is to sell
                                         cin >> buy;
                                         cout << endl;
+                                        // output if input is invalid
                                         if(buy != 'n' && buy != 'y'){
                                             cout << "What kind of an answer is that? I only understand y or n.\n" << endl; 
                                         }
@@ -399,7 +424,7 @@ void merchantMenu(party &mainParty){
                 cout << "Stay safe out there! Goodbye!\n" << endl;
                 break;
             }
-            default:{
+            default:{ // for invalid input 
                 cout << "Please only enter an integer between 1-6. What can I get for you?\n" << endl;
                 break;
             }
@@ -427,7 +452,8 @@ void statusUpdate(party mainParty, Sorcerer gameSorcerer){
 
 
 /*
-Algorithm accepts a map object and a party object
+Algorithm allows the party to move spaces on the map
+Accept a map object and a party object
 Declare a RNG object, a char to hold the move directio choice, and a bool to hold if the party's move choice is allowed
 While the move is not allowed:
 Ask the user where they would like to go and print the options as well
@@ -438,6 +464,7 @@ After exiting the while loop (if the party moved) loop through the party and ind
 */
 
 void move(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
+    // for random number generation
     RNG random;
     char moveChoice;
     bool okayMove = false;
@@ -451,7 +478,7 @@ void move(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
             // if it did change the bool
             okayMove = true;
         }
-        else{
+        else{ // if move was not possible
             cout << "Ouch, looks like you've walked into a wall. Maybe try going a different direction or use lowercase input.\n" << endl;
         }
     }
@@ -462,39 +489,51 @@ void move(Map &mainMap, party &mainParty, Sorcerer &gameSorcerer){
             mainParty.removeHunger(i,1);
         }
     }
+    // if the space was not explored, increase the anger
     if(mainMap.isExplored(mainMap.getPlayerRow(),mainMap.getPlayerCol()) == false){
         gameSorcerer.increaseAnger();
     }
 }
 
+/*
+Algorithm allows the party to investigate the space
+Accepts the party object, the bool for if the game is over, and the vector of monsters
+Declare a variable holding the the result of the investigation
+Depending on what the result was enact whatever outcome, finding a key, finding treasure, incountering a monster or nothing
+*/
 
-
-void investigate(party &mainParty, bool &gameOver){
+void investigate(party &mainParty, bool &gameOver, vector<Monster> &monsters){
+    // for random results
     RNG random;
     int investigationResult = random.randIntBetweenOneAndTen();
-    if(investigationResult == 1){
+    // all cases are based on the probability of them happneing
+    // finding a key 10%
+    if(investigationResult == 1){ 
         mainParty.increaseKeysFound();
         cout << "What luck, you found a key!\n" << endl;
     }
+    // find treasure 20%
     else if(investigationResult == 2 || investigationResult == 3){
+        // you can only find treasure if you have cleared at least one room
         if(mainParty.getRoomsCleared() > 0){
             mainParty.partyInventory_.changeTreasureQuantity(mainParty.getRoomsCleared()-1,1);
             cout << "Something shiny... You found a " << mainParty.partyInventory_.treasureAvailible().at(mainParty.getRoomsCleared()-1).getType() << 
             "!\n" << endl;
         }
-        else{
+        else{ // if they have not cleared a room yet
             cout << "Looks like nothing turned up.\n" << endl;
         }
     }
+    // encouter a monster 20%
     else if(investigationResult == 4 || investigationResult == 5){
         cout << "Uh-oh, you have encountered a monster!\n" << endl;
-        vector<Monster> monsters;
-        readInMonsters(monsters, "monsters.txt");
         fightMonster(monsters, mainParty, false, gameOver);
     }
-    else{
+    // nothing happening 50%
+    else{ 
         cout << "Looks like nothing turned up.\n" << endl;
     }
+    // determining if the party loses fullness pointed 
     if(random.doesActionOccur(50) == true){
         for(int i = 0; i < mainParty.getPlayers().size(); i++){
             mainParty.removeHunger(i,1);
@@ -504,6 +543,7 @@ void investigate(party &mainParty, bool &gameOver){
     mainParty.increaseSpacesExplored();
 }
 
+// Randomly causes one of the end of turn misfortunes to the party
 bool endOfTurnMisfortune(party &mainParty, int misfortuneProb, bool wasLastActionExitRoomOpenedWithKey, bool &gameOver)
 {
     RNG randomGenerator;
@@ -645,7 +685,6 @@ bool endOfTurnMisfortune(party &mainParty, int misfortuneProb, bool wasLastActio
     return false; // Should never occur
 
 }
-
 
 // Read in monsters to the monsters vector from a file
 bool readInMonsters(vector<Monster> &monsters, string filename)
@@ -823,7 +862,6 @@ bool fightMonster(vector<Monster> &monsters, party &mainParty, bool isInRoom, bo
     }
 
 }
-
 
 // Party must win and complete a puzzle!
 bool fightSorcerer(party &mainParty, Map &mainMap, Sorcerer &mainSorcerer, vector<Monster> &monsters)

@@ -195,9 +195,3 @@ int main(){
     inDungeon(gameSorcerer, mainMap, mainParty);
     return 0;
 }
-
-/*
-monster from room appeared again ~
-
-said that the monsters were all gone but then one showed up and was one i had beaten, monster showed up again
-*/

@@ -92,7 +92,7 @@ class inventory{
 
 
         void addIngredients(int inputIngredients); // Adds ingredient to total ingredients
-        void addGold(int numPieces); // Adds numPieces to the current amount of gold
+        void addGold(int numPieces); // Changes goldPieces by numPieces (can actually be adding or subtracting gold)
         void addWeapons(weapon weaponToAdd); // Add weapon to inventory
         void addArmor(int inputArmor); // Add armor to inventory
         bool removeWeapon(int weaponToRemove); // Removes weapon
@@ -103,10 +103,6 @@ class inventory{
         void changeTreasureQuantity(int type, int quantChange); // changes the amount of that type of treasure
         void changeCookwareQuantity(int type, int quantChange); // changes the amount of that type of cookware
         int totalCookware(); // returns how much cookware the party has
-
-
-        bool useCookware(char type, int kgIngredientsUsed); // If cookware of a given type is avaible, see if using it results in sucess. Uses up ingredients
-
         bool spendGold(int amountToSpend); // Checks to see if the user has sufficient gold, subtracts it if true
  
 };
